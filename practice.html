@@ -1,0 +1,531 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Webscribe</title>
+    <!-- <link rel="icon" type="image/ico" href="images/favicon.ico" /> -->
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- ============================================
+        ================= Stylesheets ===================
+        ============================================= -->
+    <!-- vendor css files -->
+    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="css/vendor/animate.css">
+    <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" href="js/vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" href="js/vendor/select2/select2-bootstrap.css">
+    <link rel="stylesheet" href="js/vendor/select2/select2.css">
+    <!-- project main css files -->
+    <link rel="stylesheet" href="css/main.css">
+    <!--/ stylesheets -->
+    <!-- ==========================================
+        ================= Modernizr ===================
+        =========================================== -->
+    <script src="js/vendor/modernizr/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <!--/ modernizr -->
+</head>
+
+<body id="webscribe" class="appWrapper">
+    <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <!-- ====================================================
+        ================= Application Content ===================
+        ===================================================== -->
+    <div id="wrap" class="animsition">
+        <div class="page page-core">
+            <div class="text-center">
+                <h3 class="text-light text-white">WEBSCRIBE</h3>
+            </div>
+            <div class="container w-500 p-15 bg-white mt-40 text-center" id='pagecontent'>
+                <div class="page-header">
+                    <h3>Practice Locations and Providers</h3>
+                </div>
+                <div class="row grid-divider">
+                    <div class="col-sm-6">
+                        <div class="col-padding">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4>Locations
+                                        <a href="javascript:void(0);" id="newLocation"><span class="fa fa-plus-square pull-right bigicon"></span></a>
+                                    </h4>
+                                </div>
+                                <div class="panel-body text-center">
+                                    <table class="table table-bordered table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Location Number</th>
+                                                <th class="text-center">Location Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="practiceLocation">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="col-padding">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4>Providers
+                                        <a href="javascript:void(0);" id="newProvider"><span class="fa fa-plus-square pull-right bigicon"></span></a>
+                                    </h4>
+                                </div>
+                                <div class="panel-body text-center">
+                                    <table class="table table-bordered table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Provider Names</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="locationProviders">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-0">
+                            <div class="form-group">
+                                <a href="index.html" class="btn btn-lightred b-0 text-uppercase pull-right">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <!-- New Location Modal -->
+                <div id="location-modal" class="modal fade" tabindex="-1" aria-labelledby="windowTitleLabel">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h3 class="modal-title">Location Information</h3>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" id="locationform">
+                                    <div class="container-fluid">
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="locationId">Location ID</label>
+                                            <div class="col-md-4">
+                                                <input id="locationId" name="locationId" type="text" placeholder="" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="locationInactive"></label>
+                                            <div class="controls">
+                                                <label class="checkbox inline" for="locationInactive">
+                                                    <input type="checkbox" name="locationInactive" id="locationInactive" value="1"> Location Inactive
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="locationName">Location Name</label>
+                                            <div class="col-md-4">
+                                                <input id="locationName" name="locationName" type="text" placeholder="" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="locationAddressName">Location Address Name</label>
+                                            <div class="col-md-4">
+                                                <input id="locationAddressName" name="locationAddressName" type="text" placeholder="" class="form-control input-sm" required>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="locationAddress1">Location Address</label>
+                                            <div class="col-md-4">
+                                                <input id="locationAddress1" name="locationAddress1" type="text" placeholder="" class="form-control input-sm" required>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="locationAddress2"></label>
+                                            <div class="col-md-4">
+                                                <input id="locationAddress2" name="locationAddress2" type="text" placeholder="" class="form-control input-sm" required>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="patientAddress2"></label>
+                                            <div class="col-md-4">
+                                                <input id="address-2" name="patientAddress2" type="text" placeholder="" class="form-control input-sm">
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback zipbox">
+                                            <label class="col-md-4 control-label" for="locationZip">Location ZIP</label>
+                                            <div class="col-md-4">
+                                                <input id="locationZip" data-minlength="5" data-maxlength="5" name="locationZip" type="number" placeholder="" class="zip form-control input-sm" required>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="locationCity">Location City</label>
+                                            <div class="col-md-4">
+                                                <input id="locationCity" name="locationCity" type="text" placeholder="" class="city form-control input-sm" required>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="locationState">Location State</label>
+                                            <div class="col-md-4 controls">
+                                                <select id="locationState" name="locationState" class="state-basic-placeholder-single form-control input-sm" required>
+                                                    <option value=""></option>
+                                                    <option value="AL">Alabama</option>
+                                                    <option value="AK">Alaska</option>
+                                                    <option value="AZ">Arizona</option>
+                                                    <option value="AR">Arkansas</option>
+                                                    <option value="CA">California</option>
+                                                    <option value="CO">Colorado</option>
+                                                    <option value="CT">Connecticut</option>
+                                                    <option value="DE">Delaware</option>
+                                                    <option value="DC">District Of Columbia</option>
+                                                    <option value="FL">Florida</option>
+                                                    <option value="GA">Georgia</option>
+                                                    <option value="HI">Hawaii</option>
+                                                    <option value="ID">Idaho</option>
+                                                    <option value="IL">Illinois</option>
+                                                    <option value="IN">Indiana</option>
+                                                    <option value="IA">Iowa</option>
+                                                    <option value="KS">Kansas</option>
+                                                    <option value="KY">Kentucky</option>
+                                                    <option value="LA">Louisiana</option>
+                                                    <option value="ME">Maine</option>
+                                                    <option value="MD">Maryland</option>
+                                                    <option value="MA">Massachusetts</option>
+                                                    <option value="MI">Michigan</option>
+                                                    <option value="MN">Minnesota</option>
+                                                    <option value="MS">Mississippi</option>
+                                                    <option value="MO">Missouri</option>
+                                                    <option value="MT">Montana</option>
+                                                    <option value="NE">Nebraska</option>
+                                                    <option value="NV">Nevada</option>
+                                                    <option value="NH">New Hampshire</option>
+                                                    <option value="NJ">New Jersey</option>
+                                                    <option value="NM">New Mexico</option>
+                                                    <option value="NY">New York</option>
+                                                    <option value="NC">North Carolina</option>
+                                                    <option value="ND">North Dakota</option>
+                                                    <option value="OH">Ohio</option>
+                                                    <option value="OK">Oklahoma</option>
+                                                    <option value="OR">Oregon</option>
+                                                    <option value="PA">Pennsylvania</option>
+                                                    <option value="RI">Rhode Island</option>
+                                                    <option value="SC">South Carolina</option>
+                                                    <option value="SD">South Dakota</option>
+                                                    <option value="TN">Tennessee</option>
+                                                    <option value="TX">Texas</option>
+                                                    <option value="UT">Utah</option>
+                                                    <option value="VT">Vermont</option>
+                                                    <option value="VA">Virginia</option>
+                                                    <option value="WA">Washington</option>
+                                                    <option value="WV">West Virginia</option>
+                                                    <option value="WI">Wisconsin</option>
+                                                    <option value="WY">Wyoming</option>
+                                                </select>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="locationPhone1">Location Phone 1</label>
+                                            <div class="col-md-4">
+                                                <input id="locationPhone1" data-minlength="10" name="locationPhone1" type="tel" placeholder="" class="form-control input-sm" required>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="locationPhone2">Location Phone 2</label>
+                                            <div class="col-md-4">
+                                                <input id="locationPhone2" name="locationPhone2" type="tel" placeholder="" class="form-control input-sm">
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="locationFax">Location Fax</label>
+                                            <div class="col-md-4">
+                                                <input id="locationFax" name="locationFax" type="tel" placeholder="" class="form-control input-sm">
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="locationContactName">Location Contact Name</label>
+                                            <div class="col-md-4">
+                                                <input name="locationContactName" type="text" placeholder="" class="form-control input-sm">
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="locationEmail">Location Email</label>
+                                            <div class="col-md-4">
+                                                <input name="locationEmail" type="text" placeholder="" class="form-control input-sm">
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                        <div id="rxerrors">
+                                        </div>
+                                </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="form-group">
+                                        <button class="btn btn-default sent" data-dismiss="modal" id="close">Close
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                        </button>
+                                        <button value="Send" class="btn btn-success" id="updateLocation">Update Location</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/New Location Modal -->
+                <!-- New Provider Modal -->
+                <div id="provider-modal" class="modal fade" tabindex="-1" aria-labelledby="windowTitleLabel">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h3 class="modal-title">Provider Information</h3>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" id="providerform">
+                                    <div class="container-fluid">
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="doctorNpi">NPI</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorNpi" name="doctorNpi" type="text" placeholder="" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="doctorLastName">Last Name</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorLastName" name="doctorLastName" type="text" placeholder="" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="doctorFirstName">First Name</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorFirstName" name="doctorFirstName" type="text" placeholder="" class="form-control input-sm" >
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="doctorMiddleName">Middle Name</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorMiddleName" name="doctorMiddleName" type="text" placeholder="" class="form-control input-sm">
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="doctorAddr1">Address</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorAddr1" name="doctorAddr1" type="text" placeholder="" class="form-control input-sm">
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="doctorAddr2"></label>
+                                            <div class="col-md-4">
+                                                <input id="doctorAddr2" name="doctorAddr2" type="text" placeholder="" class="form-control input-sm" required>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback zipbox" >
+                                            <label class="col-md-4 control-label" for="doctorZip">ZIP</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorZip" data-minlength="5" data-maxlength="5" name="doctorZip" type="number" placeholder="" class="zip form-control input-sm" required>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="doctorCity">City</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorCity" name="doctorCity" type="text" placeholder="" class="city form-control input-sm" required>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="doctorState">State</label>
+                                            <div class="col-md-4 controls">
+                                                <select id="doctorState" name="doctorState" class="state-basic-placeholder-single form-control input-sm" required>
+                                                    <option value=""></option>
+                                                    <option value="AL">Alabama</option>
+                                                    <option value="AK">Alaska</option>
+                                                    <option value="AZ">Arizona</option>
+                                                    <option value="AR">Arkansas</option>
+                                                    <option value="CA">California</option>
+                                                    <option value="CO">Colorado</option>
+                                                    <option value="CT">Connecticut</option>
+                                                    <option value="DE">Delaware</option>
+                                                    <option value="DC">District Of Columbia</option>
+                                                    <option value="FL">Florida</option>
+                                                    <option value="GA">Georgia</option>
+                                                    <option value="HI">Hawaii</option>
+                                                    <option value="ID">Idaho</option>
+                                                    <option value="IL">Illinois</option>
+                                                    <option value="IN">Indiana</option>
+                                                    <option value="IA">Iowa</option>
+                                                    <option value="KS">Kansas</option>
+                                                    <option value="KY">Kentucky</option>
+                                                    <option value="LA">Louisiana</option>
+                                                    <option value="ME">Maine</option>
+                                                    <option value="MD">Maryland</option>
+                                                    <option value="MA">Massachusetts</option>
+                                                    <option value="MI">Michigan</option>
+                                                    <option value="MN">Minnesota</option>
+                                                    <option value="MS">Mississippi</option>
+                                                    <option value="MO">Missouri</option>
+                                                    <option value="MT">Montana</option>
+                                                    <option value="NE">Nebraska</option>
+                                                    <option value="NV">Nevada</option>
+                                                    <option value="NH">New Hampshire</option>
+                                                    <option value="NJ">New Jersey</option>
+                                                    <option value="NM">New Mexico</option>
+                                                    <option value="NY">New York</option>
+                                                    <option value="NC">North Carolina</option>
+                                                    <option value="ND">North Dakota</option>
+                                                    <option value="OH">Ohio</option>
+                                                    <option value="OK">Oklahoma</option>
+                                                    <option value="OR">Oregon</option>
+                                                    <option value="PA">Pennsylvania</option>
+                                                    <option value="RI">Rhode Island</option>
+                                                    <option value="SC">South Carolina</option>
+                                                    <option value="SD">South Dakota</option>
+                                                    <option value="TN">Tennessee</option>
+                                                    <option value="TX">Texas</option>
+                                                    <option value="UT">Utah</option>
+                                                    <option value="VT">Vermont</option>
+                                                    <option value="VA">Virginia</option>
+                                                    <option value="WA">Washington</option>
+                                                    <option value="WV">West Virginia</option>
+                                                    <option value="WI">Wisconsin</option>
+                                                    <option value="WY">Wyoming</option>
+                                                </select>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="doctorPhone1">Phone 1</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorPhone1" data-minlength="10" name="doctorPhone1" type="tel" placeholder="" class="form-control input-sm">
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="doctorPhone2">Phone 2</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorPhone2" name="doctorPhone2" type="tel" placeholder="" class="form-control input-sm">
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="doctorFax">Fax</label>
+                                            <div class="col-md-4">
+                                                <input id="doctorFax" name="doctorFax" type="tel" placeholder="" class="form-control input-sm">
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="doctorDea">DEA #</label>
+                                            <div class="col-md-4">
+                                                <input name="doctorDea" type="text" placeholder="" class="form-control input-sm">
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="doctorStateLicense">State License #</label>
+                                            <div class="col-md-4">
+                                                <input name="doctorStateLicense" type="text" placeholder="" class="form-control input-sm">
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group has-feedback">
+                                            <label class="col-md-4 control-label" for="doctorPracticeType">Practice Type</label>
+                                            <div class="col-md-4 controls">
+                                                <select id="doctorPracticeType" name="doctorPracticeType" class="js-example-placeholder-single form-control input-sm">
+                                                    <option value=""></option>
+                                                </select>
+                                                <span class="help-block with-errors"></span>
+                                            </div>
+                                        </div>
+                                        <div id="rxerrors">
+                                        </div>
+                                </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="form-group">
+                                        <button class="btn btn-default sent" data-dismiss="modal" id="close">Close
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                        </button>
+                                        <button value="Send" class="btn btn-success" id="requestProvider">Update Provider</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/New Provider Modal -->
+            </div>
+            <!-- /pagecontent-->
+            <!--/ Application Content -->
+            <!-- ============================================
+        ============== Vendor JavaScripts ===============
+        ============================================= -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+            <script>
+            window.jQuery || document.write('<script src="js/vendor/jquery/jquery-1.11.2.min.js"><\/script>')
+            </script>
+            <script src="js/vendor/bootstrap/bootstrap.min.js"></script>
+            <script src="js/vendor/jRespond/jRespond.min.js"></script>
+            <script src="js/vendor/sparkline/jquery.sparkline.min.js"></script>
+            <script src="js/vendor/slimscroll/jquery.slimscroll.min.js"></script>
+            <script src="js/vendor/animsition/js/jquery.animsition.min.js"></script>
+            <script src="js/vendor/screenfull/screenfull.min.js"></script>
+            <script src="js/vendor/daterangepicker/moment.min.js"></script>
+            <script src="js/vendor/select2/select2.min.js"></script>
+            <script src="js/vendor/signature-pad/jSignature.min.js"></script>
+            <!--/ vendor javascripts -->
+            <!-- ============================================
+        ============== Custom JavaScripts ===============
+        ============================================= -->
+            <script src="js/main.js"></script>
+            <script src="js/rxipsite.js"></script>
+            <!--/ custom javascripts -->
+            <!-- ===============================================
+        ============== Page Specific Scripts ===============
+        ================================================ -->
+            <script>
+            $('#newLocation').click(function() {
+                $('#location-modal').modal();
+            });
+
+            $('#newProvider').click(function() {
+                $('#provider-modal').modal();
+            });
+
+            $(function() {
+                $("#location-modal").appendTo("body");
+                $("#provider-modal").appendTo("body");
+            });
+            </script>
+            <!--/ Page Specific Scripts -->
+</body>
+
+</html>

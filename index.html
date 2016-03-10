@@ -1,0 +1,1128 @@
+<!doctype html>
+<!--[if lt IE 7]>      
+<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="">
+   <![endif]-->
+<!--[if IE 7]>         
+   <html class="no-js lt-ie9 lt-ie8" lang="">
+      <![endif]-->
+<!--[if IE 8]>         
+      <html class="no-js lt-ie9" lang="">
+         <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Webscribe</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- ============================================
+                  ================= Stylesheets ===================
+                  ============================================= -->
+    <!-- vendor css files -->
+    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="css/vendor/animate.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="js/vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" href="js/vendor/daterangepicker/daterangepicker-bs3.css">
+    <link rel="stylesheet" href="js/vendor/datepicker/css/datepicker.css">
+    <link rel="stylesheet" href="js/vendor/morris/morris.css">
+    <link rel="stylesheet" href="js/vendor/owl-carousel/owl.carousel.css">
+    <link rel="stylesheet" href="js/vendor/owl-carousel/owl.theme.css">
+    <link rel="stylesheet" href="js/vendor/rickshaw/rickshaw.min.css">
+    <link rel="stylesheet" href="js/vendor/datetimepicker/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="js/vendor/datatables/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="js/vendor/datatables/datatables.bootstrap.min.css">
+    <link rel="stylesheet" href="js/vendor/chosen/chosen.css">
+    <link rel="stylesheet" href="js/vendor/summernote/summernote.css">
+    <link rel="stylesheet" href="js/vendor/select2/select2-bootstrap.css">
+    <link rel="stylesheet" href="js/vendor/select2/select2.css">
+    <!-- project main css files -->
+    <link rel="stylesheet" href="css/main.css">
+    <!--/ stylesheets -->
+    <!-- ==========================================
+                  ================= Modernizr ===================
+                  =========================================== -->
+    <script src="js/vendor/modernizr/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <!--/ modernizr -->
+</head>
+
+<body id="WEBSCRIBE" class="appWrapper">
+    <!--[if lt IE 8]>
+               <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+               <![endif]-->
+    <div id='loginform' style="display:none">
+        <div class="page page-core page-login">
+            <div class="text-center">
+                <h3 class="text-light text-white">WEBSCRIBE</h3>
+            </div>
+            <div class="container w-420 p-15 bg-white mt-40 text-center">
+                <h2 class="text-light text-greensea">Log In</h2>
+                <form name="form" class="form-validation mt-20" novalidate="">
+                    <div class="form-group">
+                        <input type="email" name="username" class="form-control underline-input" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" class="form-control underline-input">
+                    </div>
+                    <p id="loginmsg" style="color:red"> </p>
+                    <div class="form-group text-left mt-20">
+                        <a id="loginlink" href="#" class="btn btn-greensea b-0 br-2 mr-5">Login</a>
+                        <label class="checkbox checkbox-custom-alt checkbox-custom-sm inline-block">
+                            <input type="checkbox"><i></i>Remember me
+                        </label>
+                        <a href="forgotpass.html" class="pull-right mt-10">Forgot Password?</a>
+                    </div>
+                </form>
+                <!-- <div class="bg-slategray lt wrap-reset mt-40">
+                    <p class="m-0">
+                        <a href="signup.html" class="text-uppercase">Create an account</a>
+                    </p>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div id='pagecontent' style="display:none">
+        <!-- ===============================================
+                  ================= HEADER Content ===================
+                  ================================================ -->
+        <section id="header">
+            <header class="clearfix">
+                <!-- Branding -->
+                <div class="branding">
+                    <!-- <a class="brand" href="index.html">
+                        <h4><span>WEBSCRIBE</span></h4>
+                    </a> -->
+                    <a role="button" tabindex="0" class="offcanvas-toggle visible-xs-inline"><i class="fa fa-bars"></i></a>
+                </div>
+                <!-- Branding end -->
+                <!-- Left-side navigation -->
+                <ul class="nav-left pull-left list-unstyled list-inline">
+                    <li class="sidebar-collapse divided-right">
+                        <!-- <a role="button" tabindex="0" class="collapse-sidebar">
+                            <i class="fa fa-outdent"></i>
+                        </a> -->
+                    </li>
+                    <li class="dropdown divided-right settings">
+                        <a role="button" tabindex="0" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-cog"></i>
+                        </a>
+                        <ul class="dropdown-menu with-arrow animated littleFadeInUp" role="menu">
+                            <li>
+                                <ul class="list-inline">
+                                    <li class="title"><a href="practice.html">Practice Management</a></li>
+                                    <li class="title"><a href="">Add/Edit Signature</a></li>
+                                    <li class="title"><a href="">Update Password</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Left-side navigation end -->
+                <!-- Right-side navigation -->
+                <ul class="nav-right pull-right list-inline">
+                    <li class="dropdown notifications">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-bell"></i>
+                            <span class="badge bg-lightred" id="scriptNumber"></span>
+                        </a>
+                        <div class="dropdown-menu pull-right with-arrow panel panel-default animated littleFadeInLeft">
+                            <div class="panel-heading">
+                                <p id="scriptNumberTwo"></p>
+                            </div>
+                            <!-- <ul class="list-group">
+                                 <li class="list-group-item">
+                                     <a role="button" tabindex="0" class="media">
+                                         <span class="pull-left media-object media-icon bg-danger">
+                                             <i class="fa fa-ban"></i>
+                                         </span>
+                                         <div class="media-body">
+                                             <span class="block">Dr. Morrison cancelled account</span>
+                                             <small class="text-muted">6 minutes ago</small>
+                                         </div>
+                                     </a>
+                                 </li>
+                                 
+                                 <li class="list-group-item">
+                                     <a role="button" tabindex="0" class="media">
+                                         <span class="pull-left media-object media-icon bg-primary">
+                                             <i class="fa fa-hourglass-start"></i>
+                                         </span>
+                                         <div class="media-body">
+                                             <span class="block">New Pending Prescription</span>
+                                             <small class="text-muted">12 minutes ago</small>
+                                         </div>
+                                     </a>
+                                 </li>
+                                 
+                                 <li class="list-group-item">
+                                     <a role="button" tabindex="0" class="media">
+                                         <span class="pull-left media-object media-icon bg-greensea">
+                                             <i class="fa fa-lock"></i>
+                                         </span>
+                                         <div class="media-body">
+                                             <span class="block">User Robert locked account</span>
+                                             <small class="text-muted">18 minutes ago</small>
+                                         </div>
+                                     </a>
+                                 </li>
+                                 
+                                 </ul> -->
+                            <div class="panel-footer">
+                                <a role="button" tabindex="0">Show all notifications <i class="fa fa-angle-right pull-right"></i></a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="dropdown nav-profile">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" id="providerPopulate">
+                            <img src="" alt="" class="img-circle size-30x30">
+                            <span><i class="fa fa-angle-down"></i></span>
+                        </a>
+                        <ul class="dropdown-menu animated littleFadeInRight" role="menu">
+                            <li>
+                                <a href="profile.html" role="button" tabindex="0">
+                                    <i class="fa fa-user"></i>Edit Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a role="button" tabindex="0">
+                                    <i class="fa fa-cog"></i>Settings
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a role="button" tabindex="0" id="logout">
+                                    <i class="fa fa-sign-out"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Right-side navigation end -->
+            </header>
+        </section>
+        <!--/ HEADER Content  -->
+        <!-- =================================================
+                  ================= CONTROLS Content ===================
+                  ================================================== -->
+        <div id="controls">
+            <!-- ================================================
+                     ================= SIDEBAR Content ===================
+                     ================================================= -->
+            <aside id="sidebar">
+                <div id="sidebar-wrap">
+                    <div class="panel-group slim-scroll" role="tablist">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#sidebarNav">
+                                    Navigation <i class="fa fa-angle-up"></i>
+                                    </a>
+                                 </h4>
+                            </div>
+                            <div id="sidebarNav" class="panel-collapse collapse in" role="tabpanel">
+                                <div class="panel-body">
+                                    <!-- ===================================================
+                                       ================= NAVIGATION Content ===================
+                                       ==================================================== -->
+                                    <ul id="navigation">
+                                        <li class="active"><a href="index.html"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+                                        <li>
+                                            <a role="button" tabindex="0"><i class="fa fa-flask"></i><span>Ingredients</span></a>
+                                            <ul>
+                                                <li><a href="javascript:void(0);" class="pdf"><i class="fa fa-caret-right"></i>Cyclobenzaprine HCI (Flexeril)</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a role="button" tabindex="0"><i class="fa fa-list"></i><span>PT &amp; DR Expectations</span></a>
+                                            <ul>
+                                                <li><a href=""><i class="fa fa-caret-right"></i>Patient Script Info INFUSION</a></li>
+                                                <li><a href=""><i class="fa fa-caret-right"></i>Patient Script Info SINUS</a></li>
+                                                <li><a href=""><i class="fa fa-caret-right"></i>Patient Script Info</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a role="button" tabindex="0"><i class="fa fa-pencil"></i> <span>Standing Order Forms</span></a>
+                                            <ul>
+                                                <li><a href=""><i class="fa fa-caret-right"></i>Formulation Change Standing Order 2015</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a role="button" tabindex="0"><i class="fa fa-youtube-play"></i> <span>Video Tutorials</span> <span class="label label-success">new</span></a>
+                                        </li>
+                                    </ul>
+                                    <!--/ NAVIGATION Content -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <!--/ SIDEBAR Content -->
+        </div>
+        <!--/ CONTROLS Content -->
+        <!-- ====================================================
+                  ================= CONTENT ===============================
+                  ===================================================== -->
+        <section id="content">
+            <div class="page page-dashboard">
+                <div class="pageheader">
+                  <div class="logo">
+                   <a href"index.html">
+                   </a>
+                  </div>
+                    <h2>Webscribe Rx <a href="practice.html"><span id='practiceTitle'></span></a></h2>
+                </div>
+                <!-- cards row -->
+                <div class="row">
+                    <div class="container p-15 mt-10 mb-40 col-sm-6 text-center">
+                        <button type="button" class="btn btn-info btn-lg bg-greensea mainButton" id="newrx"><i class="fa fa-plus-square fa-2x" style="padding-right: 10px;"></i>New Prescription</button>
+                    </div>
+                    <!-- /col -->
+                    <div class="container p-15 mt-10 mb-40 text-center col-sm-6">
+                        <button type="button" class="btn btn-info btn-lg bg-blue mainButton" id="searchrx"><i class="fa fa-search fa-2x" style="padding-right: 10px;"></i>Search Prescriptions</button>
+                    </div>
+                </div>
+                <!-- /row -->
+                <!-- row -->
+                <div class="row">
+                    <!-- col -->
+                    <div class="">
+                        <!-- tile -->
+                        <section class="tile">
+                            <!-- tile header -->
+                            <div class="tile-header dvd dvd-btm">
+                                <h2 class="custom-font"><strong>Pending </strong>Prescriptions</h2>
+                                <ul class="controls">
+                                    <li>
+                                        <a role="button" tabindex="0" class="pickDate">
+                                            <span></span>&nbsp;&nbsp;<i class="fa fa-angle-down"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <input type="text" id="search" class="form-control underline-input" placeholder="Search">
+                                    </li>
+                                    <li class="dropdown">
+                                        <a role="button" tabindex="0" class="dropdown-toggle settings" data-toggle="dropdown">
+                                            <i class="fa fa-cog"></i>
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                        </a>
+                                        <ul class="dropdown-menu pull-right with-arrow animated littleFadeInUp">
+                                            <li>
+                                                <a role="button" tabindex="0" class="tile-toggle">
+                                                    <span class="minimize"><i class="fa fa-angle-down"></i>&nbsp;&nbsp;&nbsp;Minimize</span>
+                                                    <span class="expand"><i class="fa fa-angle-up"></i>&nbsp;&nbsp;&nbsp;Expand</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a role="button" tabindex="0" class="tile-refresh">
+                                                    <i class="fa fa-refresh"></i> Refresh
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a role="button" tabindex="0" class="tile-fullscreen">
+                                                    <i class="fa fa-expand"></i> Fullscreen
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="remove"><a role="button" tabindex="0" class="tile-close"><i class="fa fa-times"></i></a></li>
+                                </ul>
+                            </div>
+                            <!-- /tile header -->
+                            <!-- tile body -->
+                            <div class="tile-body table-custom">
+                                <div class="table-responsive">
+                                    <table class="table table-custom" id="project-progress">
+                                        <thead>
+                                            <tr>
+                                                <th>Actions</th>
+                                                <th>Patient Name</th>
+                                                <th>Date Submitted</th>
+                                                <th style="width: 200px;">Status</th>
+                                                <th style="width: 60px;" class="text-right no-sort">Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="enumerateScriptsData"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- /tile body -->
+                        </section>
+                        <!-- /tile -->
+                    </div>
+                    <!-- /col -->
+                    <div class="pageheader">
+                      <div class="page-bar">
+                          <ul class="page-breadcrumb">
+                              <li>
+                                <a href="index.html"><i class="fa fa-home"></i> Webscribe</a>
+                              </li>
+                              <li>
+                                <a href="index.html">Dashboard</a>
+                              </li>
+                          </ul>
+                      </div>
+                    </div>
+                </div>
+                <!-- /row -->
+                <!-- Ingredient PDFs -->
+               <div id="ingredient-modal" class="modal fade" tabindex="-1" aria-labelledby="windowTitleLabel">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 id="ingredientTitle" class="modal-title">Title</h4>
+                            </div>
+                            <div id="ingredientPdf" class="modal-body intrinsic-container" style="height: 600px;">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <!-- /.modal -->
+                <!-- /Ingridient PDFs -->
+                <!-- New Prescriptions Modal -->
+                <div id="modal-1" class="modal fade" tabindex="-1" aria-labelledby="windowTitleLabel">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h3 class="modal-title">New Prescription</h3>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal" role="form" id="rxform">
+                                    <div class="tabbable">
+                                        <!-- Only required for left/right tabs -->
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#tab1" data-toggle="tab">RX</a></li>
+                                            <li><a href="#tab2" data-toggle="tab">Add'l Patient Info</a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="tab1">
+                                                <div class="container-fluid">
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="rxId">Rx Id</label>
+                                                        <div class="col-md-4">
+                                                            <input id="rxId" name="rxId" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="doctorId">Provider</label>
+                                                        <div class="col-md-4 controls">
+                                                            <select id="doctorFullName" name="doctorId" class="input-xlarge"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="pharmacyCode">Pharmacy</label>
+                                                        <div class="col-md-4 controls">
+                                                            <select id="pharmacyCode" name="pharmacyCode" class="input-xlarge"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="patientslist">Find A Patient</label>
+                                                        <div class="col-md-4 controls">
+                                                            <select id="patientslist" name="patientId" class="form-control input-sm">
+                                                                <option value=""></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="patientLastName">Patient Last</label>
+                                                        <div class="col-md-4">
+                                                            <input id="patientLastName" name="patientLastName" type="text" placeholder="" class="form-control input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="patientFirstName">Patient First</label>
+                                                        <div class="col-md-4">
+                                                            <input id="patientFirstName" name="patientFirstName" type="text" placeholder="" class="form-control input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="patientDob">Patient DOB</label>
+                                                        <div class="col-md-4">
+                                                            <input id="patientDob" name="patientDob" type="text" placeholder="MM/DD/YYYY" class="form-control input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="patientGender">Patient Gender</label>
+                                                        <div class="col-md-4">
+                                                            <div class="radio-inline">
+                                                                <label for="gender-0">
+                                                                    <input type="radio" name="patientGender" id="gender-0" value="M" required> Male</label>
+                                                            </div>
+                                                            <div class="radio-inline">
+                                                                <label for="gender-1">
+                                                                    <input type="radio" name="patientGender" id="gender-1" value="F" required> Female</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="patientInsuranceBin">Patient Insurance BIN</label>
+                                                        <div class="col-md-4">
+                                                            <input type="text" name="patientInsuranceBin" data-maxlength="7" class="form-control insurance-number input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="patientInsurancePcn">Patient Insurance PCN</label>
+                                                        <div class="col-md-4">
+                                                            <input type="text" name="patientInsurancePcn" data-maxlength="10" class="form-control insurance-number input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="dateWritten">Date Written</label>
+                                                        <div class=" col-md-4">
+                                                            <input id="dateWritten" name="dateWritten" type="text" class="form-control input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="formulaSpeedcode">Formula ID</label>
+                                                        <div class="col-md-4 controls">
+                                                            <select id="formulaSpeedcode" name="formulaSpeedcode" class="input-xlarge" required></select>
+                                                        </div>
+                                                        <div>
+                                                            <p class="formulaname"></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="rxQuantity">Quantity</label>
+                                                        <div class="col-md-4">
+                                                            <div class="quantity-entry"></div>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="rxRefills">Refills</label>
+                                                        <div class="col-md-4">
+                                                            <input id="rxRefills" name="rxRefills" type="number" min="0" value="0" class="form-control input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="col-md-4 control-label" for="signature">Signature</label>
+                                                                <div id="signature">
+                                                                </div>
+                                                                <button type="button" class="btn btn-default pull-right" onclick="$('#signature').jSignature('clear')">Clear Signature</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="rxerrors">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane" id="tab2">
+                                                <div class="container-fluid">
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="patientAddress1">Patient Address</label>
+                                                        <div class="col-md-4">
+                                                            <input id="patientAddress1" name="patientAddress1" type="text" placeholder="" class="form-control input-sm" required>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="patientAddress2"></label>
+                                                        <div class="col-md-4">
+                                                            <input id="address-2" name="patientAddress2" type="text" placeholder="" class="form-control input-sm">
+                                                            <span class="help-block"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback zipbox">
+                                                        <label class="col-md-4 control-label" for="patientZip">Patient ZIP</label>
+                                                        <div class="col-md-4">
+                                                            <input id="patientZip" data-minlength="5" data-maxlength="5" name="patientZip" type="number" placeholder="" class="zip form-control input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="patientCity">Patient City</label>
+                                                        <div class="col-md-4">
+                                                            <input id="patientCity" name="patientCity" type="text" placeholder="" class="city form-control input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="patientState">Patient State</label>
+                                                        <div class="col-md-4 controls">
+                                                            <select id="patientState" name="patientState" class="state-basic-placeholder-single form-control input-sm" required>
+                                                                <option value=""></option>
+                                                                <option value="AL">Alabama</option>
+                                                                <option value="AK">Alaska</option>
+                                                                <option value="AZ">Arizona</option>
+                                                                <option value="AR">Arkansas</option>
+                                                                <option value="CA">California</option>
+                                                                <option value="CO">Colorado</option>
+                                                                <option value="CT">Connecticut</option>
+                                                                <option value="DE">Delaware</option>
+                                                                <option value="DC">District Of Columbia</option>
+                                                                <option value="FL">Florida</option>
+                                                                <option value="GA">Georgia</option>
+                                                                <option value="HI">Hawaii</option>
+                                                                <option value="ID">Idaho</option>
+                                                                <option value="IL">Illinois</option>
+                                                                <option value="IN">Indiana</option>
+                                                                <option value="IA">Iowa</option>
+                                                                <option value="KS">Kansas</option>
+                                                                <option value="KY">Kentucky</option>
+                                                                <option value="LA">Louisiana</option>
+                                                                <option value="ME">Maine</option>
+                                                                <option value="MD">Maryland</option>
+                                                                <option value="MA">Massachusetts</option>
+                                                                <option value="MI">Michigan</option>
+                                                                <option value="MN">Minnesota</option>
+                                                                <option value="MS">Mississippi</option>
+                                                                <option value="MO">Missouri</option>
+                                                                <option value="MT">Montana</option>
+                                                                <option value="NE">Nebraska</option>
+                                                                <option value="NV">Nevada</option>
+                                                                <option value="NH">New Hampshire</option>
+                                                                <option value="NJ">New Jersey</option>
+                                                                <option value="NM">New Mexico</option>
+                                                                <option value="NY">New York</option>
+                                                                <option value="NC">North Carolina</option>
+                                                                <option value="ND">North Dakota</option>
+                                                                <option value="OH">Ohio</option>
+                                                                <option value="OK">Oklahoma</option>
+                                                                <option value="OR">Oregon</option>
+                                                                <option value="PA">Pennsylvania</option>
+                                                                <option value="RI">Rhode Island</option>
+                                                                <option value="SC">South Carolina</option>
+                                                                <option value="SD">South Dakota</option>
+                                                                <option value="TN">Tennessee</option>
+                                                                <option value="TX">Texas</option>
+                                                                <option value="UT">Utah</option>
+                                                                <option value="VT">Vermont</option>
+                                                                <option value="VA">Virginia</option>
+                                                                <option value="WA">Washington</option>
+                                                                <option value="WV">West Virginia</option>
+                                                                <option value="WI">Wisconsin</option>
+                                                                <option value="WY">Wyoming</option>
+                                                            </select>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-feedback">
+                                                        <label class="col-md-4 control-label" for="patientPhone1">Patient Phone 1</label>
+                                                        <div class="col-md-4">
+                                                            <input id="patientPhone1" data-minlength="10" name="patientPhone1" type="tel" placeholder="" class="form-control input-sm" required>
+                                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                            <span class="help-block with-errors"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="patientPhone2">Patient Phone 2</label>
+                                                        <div class="col-md-4">
+                                                            <input id="patientPhone2" name="patientPhone2" type="tel" placeholder="" class="form-control input-sm">
+                                                            <span class="help-block"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 control-label" for="patientShipSame"></label>
+                                                        <div class="controls">
+                                                            <label class="checkbox inline" for="patientShipSame">
+                                                                <input type="checkbox" name="patientShipSame" id="patientShipSame" value="1"> Shipping same as billing
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group patientShipAddr">
+                                                        <label class="col-md-4 control-label" for="patientShipAddress1">Patient Shipping Address</label>
+                                                        <div class="col-md-4">
+                                                            <input name="patientShipAddress1" type="text" placeholder="" class="form-control input-sm">
+                                                            <span class="help-block"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group patientShipAddr">
+                                                        <label class="col-md-4 control-label" for="patientShipAddress2"></label>
+                                                        <div class="col-md-4">
+                                                            <input name="patientShipAddress2" type="text" placeholder="" class="form-control input-sm">
+                                                            <span class="help-block"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group patientShipAddr">
+                                                        <label class="col-md-4 control-label" for="patientShipCity">Patient Shipping City</label>
+                                                        <div class="col-md-4">
+                                                            <input name="patientShipCity" type="text" placeholder="" class="form-control input-sm">
+                                                            <span class="help-block"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group patientShipAddr">
+                                                        <label class="col-md-4 control-label" for="patientShipState">Patient Shipping State</label>
+                                                        <div class="col-md-4">
+                                                            <input name="patientShipState" type="text" placeholder="" class="form-control input-sm">
+                                                            <span class="help-block"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group patientShipAddr">
+                                                        <label class="col-md-4 control-label" for="patientShipZip">Patient Shipping ZIP</label>
+                                                        <div class="col-md-4">
+                                                            <input name="patientShipZip" type="number" placeholder="" class="form-control input-sm">
+                                                            <span class="help-block"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div id="rxerrors">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="form-group">
+                                    <button class="btn btn-default sent" data-dismiss="modal" id="sent">Close
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button>
+                                    <button value="Send" class="btn btn-success" id="putrx">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /New Prescriptions Modal  -->
+                <!-- Existing Prescription Modal -->
+                <div class="container">
+                    <div class="modal fade" id="modal-2" tabindex="-1" aria-labelledby="windowTitleLabel">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h3 class="modal-title">Patient's Prescription</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="tabbable">
+                                        <!-- Only needed for left/right tabs -->
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#rxtab1" data-toggle="tab">Rx</a></li>
+                                            <li><a href="#rxtab2" data-toggle="tab">Notes</a></li>
+                                            <li><a href="#rxtab3" data-toggle="tab">Attachments</a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="rxtab1">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <form role="form" class="form-horizontal" id="rxform">
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="rxId">Rx Id</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="rxId" name="rxId" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="doctorId">Provider</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="doctorFullName" name="doctorFullName" type="text" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group has-feedback">
+                                                                    <label class="col-md-4 control-label" for="patientLastName">Patient Last</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="patientLastName" name="patientLastName" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                                        <span class="help-block with-errors"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group has-feedback">
+                                                                    <label class="col-md-4 control-label" for="patientFirstName">Patient First</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="patientFirstName" name="patientFirstName" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                                        <span class="help-block with-errors"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group has-feedback">
+                                                                    <label class="col-md-4 control-label" for="patientDob">Patient DOB</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="patientDob" name="patientDob" type="text" placeholder="MM/DD/YYYY" class="form-control input-sm" disabled>
+                                                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                                        <span class="help-block with-errors"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="patientGender">Patient Gender</label>
+                                                                    <div class="col-md-4">
+                                                                        <div class="radio-inline">
+                                                                            <label for="gender-0">
+                                                                                <input type="radio" name="patientGender" id="gender-0" value="M" disabled> Male</label>
+                                                                        </div>
+                                                                        <div class="radio-inline">
+                                                                            <label for="gender-1">
+                                                                                <input type="radio" name="patientGender" id="gender-1" value="F" disabled> Female</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group has-feedback">
+                                                                    <label class="col-md-4 control-label" for="patientInsuranceBin">Patient Insurance BIN</label>
+                                                                    <div class="col-md-4">
+                                                                        <input type="text" name="patientInsuranceBin" data-maxlength="7" class="form-control insurance-number input-sm" disabled>
+                                                                        <span class="help-block with-errors"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group has-feedback">
+                                                                    <label class="col-md-4 control-label" for="patientInsurancePcn">Patient Insurance PCN</label>
+                                                                    <div class="col-md-4">
+                                                                        <input type="text" name="patientInsurancePcn" data-maxlength="10" class="form-control insurance-number input-sm" disabled>
+                                                                        <span class="help-block with-errors"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="dateWritten">Date Written</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="dateWritten" name="dateWritten" type="text" placeholder="MM/DD/YYYY" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group ">
+                                                                    <label class="col-md-4 control-label" for="formulaSpeedcode">Formula ID</label>
+                                                                    <div class="controls">
+                                                                        <select id="formulaSpeedcode" name="formulaSpeedcode" class="input-xlarge" disabled></select>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p class="formulaname"></p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="rxQuantity">Quantity</label>
+                                                                    <div class="col-md-4">
+                                                                        <div class="quantity-entry"></div>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="rxRefills">Refills</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="rxRefills" name="rxRefills" type="number" min="0" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="patientAddress1">Patient Address</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="patientAddress1" name="patientAddress1" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block with-errors"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="patientAddress2"></label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="address-2" name="patientAddress2" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group has-feedback">
+                                                                    <label class="col-md-4 control-label" for="patientCity">Patient City</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="patientCity" name="patientCity" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group has-feedback">
+                                                                    <label class="col-md-4 control-label" for="patientState">Patient State</label>
+                                                                    <div class="col-md-4 controls">
+                                                                        <input id="patientState" name="patientState" class="form-control input-sm" disabled>
+                                                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                                        <span class="help-block with-errors"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="patientZip">Patient ZIP</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="patientZip" data-minlength="5" data-maxlength="5" name="patientZip" type="number" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group has-feedback">
+                                                                    <label class="col-md-4 control-label" for="patientPhone1">Patient Phone 1</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="patientPhone1" name="patientPhone1" type="tel" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                                        <span class="help-block with-errors"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="patientPhone2">Patient Phone 2</label>
+                                                                    <div class="col-md-4">
+                                                                        <input id="patientPhone2" name="patientPhone2" type="tel" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-4 control-label" for="patientShipSame"></label>
+                                                                    <div class="controls">
+                                                                        <label class="checkbox inline" for="checkboxes-0">
+                                                                            <input type="checkbox" name="patientShipSame" id="patientShipSame" value="1" disabled> Shipping same as billing
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group patientShipAddr">
+                                                                    <label class="col-md-4 control-label" for="patientShipAddress1">Patient Shipping Address</label>
+                                                                    <div class="col-md-4">
+                                                                        <input name="patientShipAddress1" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group patientShipAddr">
+                                                                    <label class="col-md-4 control-label" for="patientShipAddress2"></label>
+                                                                    <div class="col-md-4">
+                                                                        <input name="patientShipAddress2" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group patientShipAddr">
+                                                                    <label class="col-md-4 control-label" for="patientShipCity">Patient Shipping City</label>
+                                                                    <div class="col-md-4">
+                                                                        <input name="patientShipCity" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group patientShipAddr">
+                                                                    <label class="col-md-4 control-label" for="patientShipState">Patient Shipping State</label>
+                                                                    <div class="col-md-4">
+                                                                        <input name="patientShipState" type="text" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group patientShipAddr">
+                                                                    <label class="col-md-4 control-label" for="patientShipZip">Patient Shipping ZIP</label>
+                                                                    <div class="col-md-4">
+                                                                        <input name="patientShipZip" type="number" placeholder="" class="form-control input-sm" disabled>
+                                                                        <span class="help-block"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane" id="rxtab2">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div id="noteslist"></div>
+                                                            <div id="noteText" class="sidebar">
+                                                                <textarea class="form-control" rows="3" id="replyText"></textarea>
+                                                                <button id='replyNote'>Add Note</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane" id="rxtab3">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div id="attachments"></div>
+                                                            <div class="form-group">
+                                                                <div class="attachmentform" class="sidebar" style="">
+                                                                    <p>File Title:
+                                                                        <input type="text" name="description" size=25 />
+                                                                    </p>
+                                                                    <p>Choose Image File:
+                                                                        <input class="attachment" type="file" accept="image/*,application/pdf" id="capture" capture="camera">
+                                                                    </p>
+                                                                    <p>
+                                                                        <button class="uploadattachment">Upload image</button>
+                                                                    </p>
+                                                                    <div class="spinner" style="display:none;">
+                                                                        <img id="img-spinner" src="./img/ajax-loader.gif" alt="Loading">
+                                                                    </div>
+                                                                    <div class="rxattachmentlist"> </div>
+                                                                    <div class="rxattachment"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="rxerrors">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="form-group">
+                                            <button class="btn-danger btn-default sent" data-dismiss="modal">Close
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Existing Prescription Modal -->
+                    <!-- Search Prescription Modal -->
+                    <div class="container">
+                        <div class="modal fade" id="modal-3" tabindex="-1" aria-labelledby="windowTitleLabel">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h3 class="modal-title">Search Prescriptions</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            <div>
+                                                <p>
+                                                    Date Written:
+                                                    <a role="button" id="searchDateWritten" class="pickDate">
+                                                        <span></span>&nbsp;&nbsp;<i class="fa fa-angle-down"></i>
+                                                    </a>
+                                                </p>
+                                                <p>
+                                                    <select id="searchPatient" class="form-control"></select>
+                                                </p>
+                                                <p>
+                                                    <select id="searchProcessingStatus" class="form-control">
+                                                        <option value=''>- Any Processing Status -</option>
+                                                        <option value='Declined'>Declined</option>
+                                                        <option value="Shipped">Shipped</option>
+                                                        <option value="Dispensing">Dispensing</option>
+                                                        <option value="Processing Insurance">Processing Insurance</option>
+                                                    </select>
+                                                </p>
+                                            </div>
+                                            <div id="searchResults">
+                                                <div class="spinner" style="display:none;">
+                                                    <img id="img-spinner" src="./img/ajax-loader.gif" alt="Loading">
+                                                </div>
+                                                <table class="table">
+                                                </table>
+                                                <p id="searchErrors"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="form-group">
+                                            <button class="btn btn-default sent" data-dismiss="modal">Close
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                            </button>
+                                            <button value="Search" class="btn btn-success" id="searchrxs">Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Search Prescription Modal -->
+        </section>
+        <!--/ CONTENT -->
+        </div>
+        <!-- ============================================
+        ============== Vendor JavaScripts ===============
+        ============================================= -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script>
+        window.jQuery || document.write('<script src="js/vendor/jquery/jquery-1.11.3.min.js"><\/script>')
+        </script>
+        <script src="js/vendor/bootstrap/bootstrap.min.js"></script>
+        <script src="js/vendor/bootbox/bootbox.min.js"></script>
+        <script src="js/vendor/jRespond/jRespond.min.js"></script>
+        <script src="js/vendor/datepicker/datepicker.js"></script>
+        <script src="js/vendor/d3/d3.min.js"></script>
+        <script src="js/vendor/d3/d3.layout.min.js"></script>
+        <script src="js/vendor/rickshaw/rickshaw.min.js"></script>
+        <script src="js/vendor/sparkline/jquery.sparkline.min.js"></script>
+        <script src="js/vendor/slimscroll/jquery.slimscroll.min.js"></script>
+        <script src="js/vendor/animsition/js/jquery.animsition.min.js"></script>
+        <script src="js/vendor/validator/validator.min.js"></script>
+        <script src="js/vendor/daterangepicker/moment.min.js"></script>
+        <script src="js/vendor/daterangepicker/daterangepicker.js"></script>
+        <script src="js/vendor/screenfull/screenfull.min.js"></script>
+        <script src="js/vendor/flot/jquery.flot.min.js"></script>
+        <script src="js/vendor/flot-tooltip/jquery.flot.tooltip.min.js"></script>
+        <script src="js/vendor/flot-spline/jquery.flot.spline.min.js"></script>
+        <script src="js/vendor/easypiechart/jquery.easypiechart.min.js"></script>
+        <script src="js/vendor/raphael/raphael-min.js"></script>
+        <script src="js/vendor/morris/morris.min.js"></script>
+        <script src="js/vendor/owl-carousel/owl.carousel.min.js"></script>
+        <script src="js/vendor/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="js/vendor/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="js/vendor/datatables/extensions/dataTables.bootstrap.js"></script>
+        <script src="js/vendor/chosen/chosen.jquery.min.js"></script>
+        <script src="js/vendor/summernote/summernote.min.js"></script>
+        <script src="js/vendor/coolclock/coolclock.js"></script>
+        <script src="js/vendor/coolclock/excanvas.js"></script>
+        <script src="js/vendor/select2/select2.min.js"></script>
+        <script src="js/vendor/placeholders/placeholders.js"></script>
+        <script src="js/vendor/signature-pad/jSignature.min.js"></script>
+        <!--[if lt IE 9]>
+        <script src="js/vendor/signature-pad/flashcanvas.js"></script>
+        <![endif]-->
+        <!--/ vendor javascripts -->
+        <!-- ============================================
+                  ============== Custom JavaScripts ===============
+                  ============================================= -->
+        <script src="js/main.js"></script>
+        <script src="js/rxipsite.js"></script>
+        <!--/ custom javascripts -->
+        <!-- ===============================================
+        ============== Page Specific Scripts ===============
+        ================================================ -->
+        <script type="text/javascript">
+        $(function() {
+            $('input[name="dateWritten"]').daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true
+                },
+                function(start, end, label) {
+                    var years = moment().diff(start, 'years');
+                });
+
+            // Modal append to body
+            $("#ingredient-modal").appendTo("body");
+            $("#modal-1").appendTo("body");
+            $("#modal-2").appendTo("body");
+            $("#modal-3").appendTo("body");
+
+            // datepicker Init
+            $('.date-picker').daterangepicker({});
+        });
+
+
+
+        /////////////////////////////////////
+        // Signature Pad init
+        /////////////////////////////////////
+        var $sigdiv = $("#signature");
+        $sigdiv.jSignature({
+            width: 300,
+            height: 80
+        }); // inits the jSignature widget.
+        // after signing...
+        $sigdiv.jSignature("reset");
+        // clears the canvas and rerenders the decor on it.
+        </script>
+        <!--/ Page Specific Scripts -->
+</body>
+
+</html>

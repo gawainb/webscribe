@@ -1,0 +1,234 @@
+<!doctype html>
+<head><title>Test</title>
+	<script type="text/javascript" src="js/vendor/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="js/rxipsite.js"></script>
+	<script type="text/javascript">
+		/* On document load, see if there is a session (login) established.
+		 * 
+		 * If not, display the login form. (In this example page, it's just a hidden div
+		 * that we'll show when needed.)
+		 */
+		$(function() {
+			// Create the RxIP API object
+			if (location.hostname == 'rxip-dev')
+				rxip = new RxIPSite('http://rxip-dev/apiajax.php');	// For JRB
+			else
+				rxip = new RxIPSite('http://pago-devel.rxip.net/apiajax.php');
+			// Set up a function to be called after each non-login API call
+			// to check whether the user is still logged in. If not, reload
+			// the page to start the login process.
+			rxip.callCompleted = function(func) {
+				if (!rxip.site.loggedIn)
+					location.reload();
+				else {
+					setDebugLinks();
+					var h = '';
+					for (var i in rxip.site.practices)
+						h += '<option value="'+rxip.site.practices[i].practiceId+'">'+rxip.siteHtml.practices[i].practiceName+'</option>';
+					$('#practice-select').html(h).val(rxip.site.practiceId);
+				}
+			};
+			// Initialize the session.
+			if (!rxip.initSession()) {
+				// There is no session, so display the login form.
+				$('#loginform').show();
+				$('#pagecontent').hide();
+			} else {
+				rxip.callAjax('ping');
+			}
+			// Login form action.
+			// Collect the login form data using the RxIPSite.collectFormData function and
+			// pass it to the RxIPSite.loginUser function to attempt login.
+			$('#loginlink').click(function() {
+				$('#loginmsg').html('Try...');
+				var fd = rxip.collectFormData('loginform');
+				fd.application = 'apitest';
+				rxip.loginUser(fd, function(loggedIn) {
+					if (loggedIn) {
+						// We're in; hide the login form and show the page content
+						$('#loginform').hide();
+						$('#pagecontent').show();
+					} else	// Didn't work. Leave the login form displayed
+						$('#loginmsg').html('Failed');
+				});
+				return false;
+			});
+			// Show-user action.
+			// Make a direct AJAX call to the RxIP service. The function we are calling isn't
+			// that important, but a successful call will result in rxip.site having information
+			// about the user.
+			$('#clik').click(function() {
+				rxip.callAjax('showOrigin', { }, function(data) {
+					var h = 'RxIP Version: '+rxip.siteHtml.rxipVersion+'<br />User: '+rxip.siteHtml.userFullName+'<br />Practice: '+rxip.siteHtml.practiceName;
+					h += '<br />User '+(rxip.havePractice() ? 'has' : 'does NOT have')+' a practice';
+					h += '<br />User '+(rxip.site.isPracticeAdmin ? 'is' : 'is NOT')+' an admin for the selected practice';
+					h += '<br />User '+(rxip.hasProviders() ? 'has' : 'does NOT have')+' providers';
+					$('#pagemsg').html(h);
+				});
+				return false;
+			});
+			// List-scripts action
+			// Make a direct AJAX call to the RxIP service. (We may want to do some of this
+			// code in an RxIPSite object function at some point.)
+			//
+			$('#enum').click(function(data) {
+				var fd = rxip.collectFormData('enumArgs');
+				rxip.callAjax('enumerateScripts', rxip.collectFormData('enumArgs'), function(data) {
+					var h = '<p>'+data.scripts.length+' scripts:</p>';
+					for (var i in data.scripts)
+						h += listRx(data.scripts[i]);
+					$('#pagemsg').html(h);
+				});
+				return false;
+			});
+			// List-patients action
+			// Make a direct AJAX call to the RxIP service. (We may want to do some of this
+			// code in an RxIPSite object function at some point.)
+			//
+			$('#pts').click(function(data) {
+				rxip.callAjax('enumeratePatients', { }, function(data) {
+					var h = '<p>Patients:</p><p>';
+					for (var i in data.patients) {
+						var pt = data.patients[i];
+						var s = rxip._escapeObject(pt);
+						h += i+': <a href="#" class="ptlink" pid="'+pt.patientId+'">'+s.patientLastName+', '+s.patientFirstName+' ['+s.patientDob+']</a>';
+						h += '<br />'; 
+					}
+					$('#pagemsg').html(h+'</p>');
+					$('a.ptlink').click(function(data2) {
+						var pid = $(this).attr('pid');
+						rxip.callAjax('enumerateScripts', {patientId: pid}, function(data) {
+							var h = '<p>Patient Scripts:</p>';
+							for (var i in data.scripts)
+								h += listRx(data.scripts[i]);
+							$('#pagemsg').html(h);
+						});
+						return false;
+					});
+				});
+				return false;
+			});
+			// Logout link action
+			// Call the RxIPSite.logout function to kill the session, then reload the page to
+			// start all over.
+			$('#logout').click(function() {
+				rxip.logout(function(data) {
+					location.reload();
+				});
+				return false;
+			});
+			// Debugging link action
+			$('a.debugLink').click(function() {
+				var setting = {};
+				var action = $(this).attr('act');
+				setting[action] = !rxip.site.serverDebugSettings[action];
+				if (action == 'sqlLevel' && setting['action'])
+					setting[action] = 2;
+				rxip.setServerDebug(setting, function() {
+					if (rxip.site.serverDebugSettings.debug)
+						$('#ajaxdebug').show();
+					else
+						$('#ajaxdebug').hide();
+					setDebugLinks();
+				});
+				return false;
+			});
+			$('#imagein').change(function() {
+				$('#imagelook').show();
+				if (!rxip.site.serverDebugSettings.debug)
+					rxip.setServerDebug({ debug: 1 }, setDebugLinks);
+			});
+			$('#imagelook').click(function() {
+				if ($('#imagein').prop('files').length == 0)
+					return false;
+				var files = { files: true, request: true, sent: $('#imagein').prop('files') };
+				rxip.callAjax('inspect', files, function(data) {
+					$('#imagein').val('');
+					$('#imagelook').hide();
+				});
+				return false;
+			});
+			$('#test').click(function() {
+				rxip.callAjax('searchPatients', { patientSearchValue: $('#pt_search').val() }, function(data) {
+					console.log(data);
+					if (data.patientList.length == 1) {
+						rxip.callAjax('getPatient', { patientId: data.patientList[0].patientId }, function(data2) {
+							console.log(data2);
+						});
+					}
+				});
+			});
+			$('#clearScriptParameters').click(function() {
+				$('#enumArgs input,#enumArgs select').val('');
+			});
+			$('#practice-select').change(function() {
+				rxip.callAjax('selectPractice', { practiceId: $(this).val() }, function() {
+					location.reload();
+				});
+			});
+		}); // end onLoad
+		
+		function listRx(rx) {
+			var h = '<p>';
+			var s = rxip._escapeObject(rx);
+			for (var k in s) {
+				h += k+': '+s[k]+'<br />';
+			}
+			h += '</p>';
+			return h; 
+		} 
+
+		function setDebugLinks() {
+			for (k in rxip.site.serverDebugSettings)
+				$("a.debugLink[act='"+k+"'] span.onoff").html(rxip.site.serverDebugSettings[k] ? 'Off' : 'On');
+		}
+	</script>
+</head>
+<body>
+	<form id='loginform' style="display:none">
+		Username: <input type="text" name="username" size=30 /><br />
+		Password: <input type="password" name="password" size=20 /><br />
+		<a id="loginlink" href="#">Login</a><br />
+		<p id="loginmsg" style="color:red"> </p>
+	</form>
+	<div id='pagecontent'>
+		<h3>This is the page!</h3>
+		<p>
+			Practice: <select id="practice-select"></select>
+		</p>
+		<p>Capture Image: <input id="imagein" type="file" accept="image/*,application/pdf" id="capture" capture="camera" multiple></p>
+		<p><button id="imagelook" style="display:none">Upload image</button></p>
+		<p><a id="clik" href="#">Show User Info</a>
+			&nbsp;&nbsp; <a id="enum" href="#">List Scripts</a>
+			&nbsp;&nbsp; <a id="pts" href="#">List Patients</a>
+			&nbsp;&nbsp; <input id='pt_search' type="text" size=20 /> <a id="test" href="#">Pt Search</a>
+		</p>
+		<p id="enumArgs"><b>Script Parameters</b> (<a href="#" id="clearScriptParameters">Clear</a>)<br />
+			Start Date: <input name="startDateWritten" type="text" size=10 />
+			End Date: <input name="endDateWritten" type="text" size=10 />
+			<br />
+			Pt Last: <input name="patientLastName" type="text" />
+			Pt First: <input name="patientFirstName" type="text" />
+			Pt DOB: <input name="patientDob" type="text" />
+			Pt ID: <input name="patientId" type="text" size=4 />
+			<br />
+			<select name="processingStatus">
+                <option value=''>- Any Processing Status -</option>
+                <option value='Declined'>Declined</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Dispensing">Dispensing</option>
+                <option value="Processing Insurance">Processing Insurance</option>
+			</select>
+		</p>
+		<p>
+			<a id="logout" href="#">Log out</a>
+			&nbsp;&nbsp; Debugging: <a class="debugLink" act="debug" href="#"><span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="trace" href="#">Trace <span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="strict" href="#">Strict <span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="sqlLevel" href="#">SQL <span class="onoff">On</span></a>
+		</p>
+		<p id="pagemsg"> </p>
+	</div>
+	<div id="debugsettings"> </div>
+	<div id="ajaxdebug" style="display:none"> </div>
+</body>

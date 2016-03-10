@@ -1,0 +1,258 @@
+<!doctype html>
+<head><title>Test Practice Location API</title>
+	<style>
+		.badfield { background: #ffcccc; }
+		table.npiresult-table td {font-size:smaller}
+	</style>
+	<script type="text/javascript" src="js/vendor/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="js/rxipsite.js"></script>
+	<script type="text/javascript">
+		/* On document load, see if there is a session (login) established.
+		 * 
+		 * If not, display the login form. (In this example page, it's just a hidden div
+		 * that we'll show when needed.)
+		 */
+		$(function() {
+			// Create the RxIP API object
+			if (location.hostname == 'rxip-dev')
+				rxip = new RxIPSite('http://rxip-dev/apiajax.php');	// For JRB
+			else
+				rxip = new RxIPSite('http://pago-devel.rxip.net/apiajax.php');
+			// Set up a function to be called after each non-login API call
+			// to check whether the user is still logged in. If not, reload
+			// the page to start the login process.
+			rxip.callCompleted = function(func) {
+				setDebugLinks();
+			};
+			// Initialize the session.
+			if (!rxip.initSession()) {
+				// There is no session, so display the login form.
+				$('#loginform').show();
+				$('#pagecontent').hide();
+			} else {
+				// Have to make a call to the API to get the site.locations array
+				rxip.callAjax('ping', {}, function() {
+					loadLocations();
+					var el = $('select[name=doctorPracticeType]');
+					for (k in rxip.site.practiceTypes)
+						el.append($('<option/>').val(rxip.site.practiceTypes[k]).text(rxip.site.practiceTypes[k]));
+				});
+			}
+			// Login form action.
+			// Collect the login form data using the RxIPSite.collectFormData function and
+			// pass it to the RxIPSite.loginUser function to attempt login.
+			$('#loginlink').click(function() {
+				$('#loginmsg').html('Try...');
+				var fd = rxip.collectFormData('loginform');
+				fd.application = 'apitest';
+				rxip.loginUser(fd, function(loggedIn) {
+					if (loggedIn) {
+						// We're in; hide the login form and show the page content
+						$('#loginform').hide();
+						$('#pagecontent').show();
+						rxip.callAjax('getUserProfile', {}, loadProfile);
+					} else	// Didn't work. Leave the login form displayed
+						$('#loginmsg').html('Failed');
+				});
+				return false;
+			});
+			// Logout link action
+			// Call the RxIPSite.logout function to kill the session, then reload the page to
+			// start all over.
+			$('#logout').click(function() {
+				rxip.logout(function(data) {
+					location.reload();
+				});
+				return false;
+			});
+			// Debugging link action
+			$('a.debugLink').click(function() {
+				var setting = {};
+				var action = $(this).attr('act');
+				setting[action] = !rxip.site.serverDebugSettings[action];
+				if (action == 'sqlLevel' && setting['action'])
+					setting[action] = 2;
+				rxip.setServerDebug(setting, function() {
+					if (rxip.site.serverDebugSettings.debug)
+						$('#ajaxdebug').show();
+					else
+						$('#ajaxdebug').hide();
+					setDebugLinks();
+				});
+				return false;
+			});
+			$("select[name='locationId']").change(function() {
+				loadLocation($(this).val());
+			});
+			$('#updateLocation').click(function() {
+				$('#location table tr').removeAttr('title').removeClass('badfield');
+				rxip.callAjax('putPracticeLocation', rxip.collectFormData('location'), function(data) {
+					if (data.errors) {
+						for (k in data.errors)
+							$("input[name='"+k+"']").parents('tr').addClass('badfield').attr('title', data.errors[k]);
+					} else {
+						$('#location').hide();
+						loadLocations();
+					}
+				});
+				return false;
+			});
+			$('#npi-button').click(function() {
+				$('#npiresult').html('');
+				var npi = $('#npi').val().trim();
+				if (npi != '') {
+					rxip.callAjax('findProviderByNpi', { doctorNpi: npi }, function(data) {
+						if (data.error)
+							$('#npiresult').html('<span style="color:red">'+data.error+'</span>');
+						else {
+							var h = '<table class="npiresult-table">';
+							var provider = rxip._escapeObject(data.provider);
+							for (k in provider)
+								h += '<tr><td>'+k+'</td><td>'+provider[k]+'</td></tr>';
+							h += '</table>';
+							$('#npiresult').html(h);
+							$('#npi').val('');
+						}
+					});
+				} 
+				return false;
+			});
+			$('#provider-link').click(function() {
+				$('select[name="locationId"]').val('');
+				$('#provider-request select, #provider-request input').val('');
+				$('div.psection').hide();
+				$('#provider-request').show();
+				return false;
+			});
+			$('#requestProvider').click(function() {
+				$('#provider-request table tr').removeAttr('title').removeClass('badfield');
+				rxip.callAjax('requestProviderAddition', rxip.collectFormData('provider-request'), function(data) {
+					if (data.errors._hasError) {
+						for (k in data.errors)
+							$("input[name='"+k+"'],select[name='"+k+"']").parents('tr').addClass('badfield').attr('title', data.errors[k]);
+					} else {
+						$('#provider-request').hide();
+						alert("Request has been submitted to "+rxip.siteHtml.siteName);
+					}
+				});
+				return false;
+			});
+		}); // end onLoad
+
+		function loadLocations() {
+			var h = '<option value="">- Select Location -</option><option value="new">- Add Location -</option>';
+			for (var idx in rxip.site.locations) {
+				var l = rxip._escapeObject(rxip.site.locations[idx]);
+				h += '<option value="'+idx+'">'+l.locationName+'</option>';
+			}
+			$("select[name='locationId']").html(h);
+		}
+
+		function loadLocation(idx) {
+			$('#location table tr').removeAttr('title').removeClass('badfield');
+			if (idx == '') {
+				$('#location').hide();
+				return;
+			}
+			if (idx == 'new') {
+				$('#location input[type="text"]').val('');
+			} else {
+				var location = rxip.site.locations[idx];
+				for (var k in location) {
+					if (k == 'locationInactive') {
+						$("input[name='locationInactive']").prop('checked', (location[k] == 1 ? true : false));
+					} else
+						$("input[name='"+k+"']").val(location[k]);
+				}
+			}
+			$('div.psection').hide();
+			$('#location').show();
+		}
+		
+		function setDebugLinks() {
+			for (k in rxip.site.serverDebugSettings)
+				$("a.debugLink[act='"+k+"'] span.onoff").html(rxip.site.serverDebugSettings[k] ? 'Off' : 'On');
+		}
+	</script>
+</head>
+<body>
+	<form id='loginform' style="display:none">
+		Username: <input type="text" name="username" size=30 /><br />
+		Password: <input type="password" name="password" size=20 /><br />
+		<a id="loginlink" href="#">Login</a><br />
+		<p id="loginmsg" style="color:red"> </p>
+	</form>
+	<div id='pagecontent'>
+		<h3>Test Practice Location API</h3>
+		<table>
+			<tr style="vertical-align: top">
+				<td>
+					<p>
+						<select name="locationId"></select>
+					</p>
+				</td>
+				<td style="padding-left:15px">
+					<p>
+						NPI Lookup: <input type="text" id="npi" size=11 /> <button id="npi-button">Look Up</button>
+					</p>
+					<div id="npiresult"></div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2>
+					<a href="#" id="provider-link">Request Provider</a>
+				</td>
+			</tr>
+		</table>
+		<div id="location" style="display:none" class="psection">
+			<h4 id="uphead">Practice Location</h4>
+			<table>
+				<tr><td>locationId</td><td><input type="text" name="locationId" size=40 disabled=disabled /></td></tr>
+				<tr><td>locationInactive</td><td><input type="checkbox" name="locationInactive" value="1" /></td></tr>
+				<tr><td>locationName</td><td><input type="text" name="locationName" size=40 /></td></tr>
+				<tr><td>locationAddressName</td><td><input type="text" name="locationAddressName" size=40 /></td></tr>
+				<tr><td>locationAddress1</td><td><input type="text" name="locationAddress1" size=40 /></td></tr>
+				<tr><td>locationAddress2</td><td><input type="text" name="locationAddress2" size=40 /></td></tr>
+				<tr><td>locationCity</td><td><input type="text" name="locationCity" size=40 /></td></tr>
+				<tr><td>locationState</td><td><input type="text" name="locationState" size=40 /></td></tr>
+				<tr><td>locationZip</td><td><input type="text" name="locationZip" size=40 /></td></tr>
+				<tr><td>locationPhone1</td><td><input type="text" name="locationPhone1" size=40 /></td></tr>
+				<tr><td>locationPhone2</td><td><input type="text" name="locationPhone2" size=40 /></td></tr>
+				<tr><td>locationFax</td><td><input type="text" name="locationFax" size=40 /></td></tr>
+				<tr><td>locationContactName</td><td><input type="text" name="locationContactName" size=40 /></td></tr>
+				<tr><td>locationEmail</td><td><input type="text" name="locationEmail" size=40 /></td></tr>
+			</table>
+			<p><button id="updateLocation">Update Practice Location</button></p>
+		</div>
+		<div id="provider-request" style="display:none" class="psection">
+			<h4>Provider Request</h4>
+			<table>
+				<tr><td>NPI</td><td><input type="text" name="doctorNpi" size=40 /></td></tr>
+				<tr><td>Last Name</td><td><input type="text" name="doctorLastName" size=40 /></td></tr>
+				<tr><td>First Name</td><td><input type="text" name="doctorFirstName" size=40 /></td></tr>
+				<tr><td>Middle Name</td><td><input type="text" name="doctorMiddleName" size=40 /></td></tr>
+				<tr><td>Address 1</td><td><input type="text" name="doctorAddr1" size=40 /></td></tr>
+				<tr><td>Address 2</td><td><input type="text" name="doctorAddr2" size=40 /></td></tr>
+				<tr><td>City</td><td><input type="text" name="doctorCity" size=40 /></td></tr>
+				<tr><td>State</td><td><input type="text" name="doctorState" size=40 /></td></tr>
+				<tr><td>ZIP</td><td><input type="text" name="doctorZip" size=40 /></td></tr>
+				<tr><td>Phone</td><td><input type="text" name="doctorPhone1" size=40 /></td></tr>
+				<tr><td>Fax</td><td><input type="text" name="doctorFax" size=40 /></td></tr>
+				<tr><td>DEA #</td><td><input type="text" name="doctorDea" size=40 /></td></tr>
+				<tr><td>State License #</td><td><input type="text" name="doctorStateLicense" size=40 /></td></tr>
+				<tr><td>Practice Type</td><td><select name="doctorPracticeType"><option value=''>- Select -</option></select></td></tr>
+			</table>
+			<p><button id="requestProvider">Request Provider</button></p>
+		</div>
+		<p>
+			<a id="logout" href="#">Log out</a>
+			&nbsp;&nbsp; Debugging: <a class="debugLink" act="debug" href="#"><span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="trace" href="#">Trace <span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="strict" href="#">Strict <span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="sqlLevel" href="#">SQL <span class="onoff">On</span></a>
+		</p>
+		<p id="pagemsg"> </p>
+	</div>
+	<div id="debugsettings"> </div>
+	<div id="ajaxdebug" style="display:none"> </div>
+</body>

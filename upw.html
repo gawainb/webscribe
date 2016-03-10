@@ -1,0 +1,52 @@
+<!doctype html>
+<head><title>Test</title>
+	<script type="text/javascript" src="js/vendor/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="js/rxipsite.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			if (location.hostname == 'rxip-dev')
+				rxip = new RxIPSite('http://rxip-dev/apiajax.php');	// For JRB
+			else
+				rxip = new RxIPSite('http://pago-devel.rxip.net/apiajax.php');
+			$('#request').click(function() {
+				rxip.callAjax('requestPasswordReset', { userEmailAddress: $('#email').val(), responseUrl: location.origin+location.pathname+'?guid=' }, function() {
+					$('#requestform').hide();
+					$('#requested').show();
+				});
+			});
+			$('#reset').click(function() {
+				rxip.callAjax('resetPassword', { guid: window.guid, password: $('#pass').val() }, function(data) {
+					location.href = location.origin+'/';
+				});
+			});
+			var guidArg = location.search.match(/guid=([^&]+)/);
+			if (guidArg) {
+				 window.guid = guidArg[1];
+				$('#resetform').show();
+			} else
+				$('#requestform').show();
+		}); // end onLoad
+	</script>
+</head>
+<body>
+	<div id='requestform' style="display:none">
+		<h3>Reauest Password Reset</h3>
+		<p>Email Address: <input type="text" id="email" size=50 /></p>
+		<p><button id="request">Request Reset</button></p>
+	</div>
+	<div id='requested' style="display:none">
+		<h3>Password Reset Requested</h3>
+		<p>
+			If the email address you entered is in the system, a password-reset
+			message will be sent to that address. Simply follow the instructions
+			in that message to reset your password.
+		</p>
+	</div>
+	<div id='resetform' style="display:none">
+		<h3>Reset Password</h3>
+		<p>
+			<p>New Password: <input type="text" id="pass" size=20 /></p>
+			<p><button id="reset">Reset Password</button></p>
+		</p>
+	</div>
+</body>

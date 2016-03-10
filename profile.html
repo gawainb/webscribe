@@ -1,0 +1,193 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Webscribe</title>
+    <!-- <link rel="icon" type="image/ico" href="images/favicon.ico" /> -->
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- ============================================
+        ================= Stylesheets ===================
+        ============================================= -->
+    <!-- vendor css files -->
+    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="css/vendor/animate.css">
+    <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" href="js/vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" href="js/vendor/select2/select2-bootstrap.css">
+    <link rel="stylesheet" href="js/vendor/select2/select2.css">
+    <!-- project main css files -->
+    <link rel="stylesheet" href="css/main.css">
+    <!--/ stylesheets -->
+    <!-- ==========================================
+        ================= Modernizr ===================
+        =========================================== -->
+    <script src="js/vendor/modernizr/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <!--/ modernizr -->
+</head>
+
+<body id="webscribe" class="appWrapper">
+    <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <!-- ====================================================
+        ================= Application Content ===================
+        ===================================================== -->
+    <div id="wrap" class="animsition">
+        <div class="page page-core page-login">
+            <div class="text-center">
+                <h3 class="text-light text-white">WEBSCRIBE</h3>
+            </div>
+            <div class="container w-500 p-15 bg-white mt-40 text-center" id='pagecontent'>
+                <div class="page-header">
+                    <h2 id="providerPopulate" class="text-light text-greensea"></h2>
+                    <h4 id="uphead">User Profile</h4>
+                </div>
+                <div>
+                    <input type="text" id="passCheck" size=20 />
+                    <button id="checkPass">Verify Password</button>
+                    <div id="checkPassResult"></div>
+                </div>
+                <div class="row grid-divider">
+                    <div class="col-sm-12">
+                        <div class="col-padding">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4>User Information</h4>
+                                </div>
+                                <div class="panel-body" id="profile">
+                                    <form class="form-horizontal">
+                                        <fieldset>
+                                            <!-- Text input-->
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label" for="userId">User ID</label>
+                                                <div class="col-md-4">
+                                                    <input id="userId" name="userId" type="text" placeholder="" class="form-control input-md" disabled>
+                                                </div>
+                                            </div>
+                                            <!-- Text input-->
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label" for="userDateCreated">Date Created</label>
+                                                <div class="col-md-4">
+                                                    <input id="userDateCreated" name="userDateCreated" type="text" placeholder="" class="form-control input-md" disabled>
+                                                </div>
+                                            </div>
+                                            <!-- Text input-->
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label" for="userEmailAddress">Email Address</label>
+                                                <div class="col-md-4">
+                                                    <input id="userEmailAddress" name="userEmailAddress" type="text" placeholder="" class="form-control input-md">
+                                                </div>
+                                            </div>
+                                            <!-- Text input-->
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label" for="userLastName">Last Name</label>
+                                                <div class="col-md-4">
+                                                    <input id="userLastName" name="userLastName" type="text" placeholder="" class="form-control input-md">
+                                                </div>
+                                            </div>
+                                            <!-- Text input-->
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label" for="userFirstName">First Name</label>
+                                                <div class="col-md-4">
+                                                    <input id="userFirstName" name="userFirstName" type="text" placeholder="" class="form-control input-md">
+                                                </div>
+                                            </div>
+                                            <!-- Text input-->
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label" for="userMiddleName">Middle Name</label>
+                                                <div class="col-md-4">
+                                                    <input id="userMiddleName" name="userMiddleName" type="text" placeholder="" class="form-control input-md">
+                                                </div>
+                                            </div>
+                                            <!-- Multiple Checkboxes -->
+                                            <div class="form-group no-self-edit">
+                                                <label class="col-md-4 control-label" for="userInactive"></label>
+                                                <div class="col-md-4">
+                                                    <div class="checkbox">
+                                                        <label for="userInactive-0">
+                                                            <input type="checkbox" name="userInactive" id="userInactive-0" value="1"> User Inactive
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Multiple Checkboxes -->
+                                            <div class="form-group no-self-edit">
+                                                <label class="col-md-4 control-label" for="userLoginDisallowed"></label>
+                                                <div class="col-md-4">
+                                                    <div class="checkbox">
+                                                        <label for="userLoginDisallowed-0">
+                                                            <input type="checkbox" name="userLoginDisallowed" id="userLoginDisallowed-0" value="1"> User Login Disallowed
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Multiple Checkboxes -->
+                                            <div class="form-group">
+                                                <label class="col-md-4 control-label" for="userSupressEmailNotifications"></label>
+                                                <div class="col-md-4">
+                                                    <div class="checkbox">
+                                                        <label for="userSupressEmailNotifications-0">
+                                                            <input type="checkbox" name="userSupressEmailNotifications" id="userSupressEmailNotifications-0" value="1"> Disable Email Notifcations
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-0">
+                    <div class="form-group">
+                        <a href="index.html" class="btn btn-lightred b-0 text-uppercase">Back</a>
+                        <a class="btn btn-greensea b-0 text-uppercase" id="updateUser">Update User Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/ Application Content -->
+        <!-- ============================================
+        ============== Vendor JavaScripts ===============
+        ============================================= -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>
+        window.jQuery || document.write('<script src="js/vendor/jquery/jquery-1.11.2.min.js"><\/script>')
+        </script>
+        <script src="js/vendor/bootstrap/bootstrap.min.js"></script>
+        <script src="js/vendor/jRespond/jRespond.min.js"></script>
+        <script src="js/vendor/sparkline/jquery.sparkline.min.js"></script>
+        <script src="js/vendor/slimscroll/jquery.slimscroll.min.js"></script>
+        <script src="js/vendor/animsition/js/jquery.animsition.min.js"></script>
+        <script src="js/vendor/screenfull/screenfull.min.js"></script>
+        <script src="js/vendor/daterangepicker/moment.min.js"></script>
+        <script src="js/vendor/select2/select2.min.js"></script>
+        <script src="js/vendor/signature-pad/jSignature.min.js"></script>
+        <!--/ vendor javascripts -->
+        <!-- ============================================
+        ============== Custom JavaScripts ===============
+        ============================================= -->
+        <script src="js/main.js"></script>
+        <script src="js/rxipsite.js"></script>
+        <!--/ custom javascripts -->
+        <!-- ===============================================
+        ============== Page Specific Scripts ===============
+        ================================================ -->
+        <script>
+        $(window).load(function() {
+
+        });
+        </script>
+        <!--/ Page Specific Scripts -->
+</body>
+
+</html>

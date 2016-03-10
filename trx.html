@@ -1,0 +1,423 @@
+<head><title>Test</title>
+	<style>
+		.badfield { background: #ffcccc }
+		div.rxnote {margin: 10px 2px; background:#ffffcc; border:solid gray 1px; padding: 0px 5px }
+		div.rxnote p.notehead { font-weight: bold }
+		div.sidebar { margin-top:10px }
+	</style>
+	<script type="text/javascript" src="js/vendor/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="js/rxipsite.js"></script>
+	<script type="text/javascript">
+		/* On document load, see if there is a session (login) established.
+		 * 
+		 * If not, display the login form. (In this example page, it's just a hidden div
+		 * that we'll show when needed.)
+		 */
+		$(function() {
+			// Create the RxIP API object
+			if (location.hostname == 'rxip-dev')
+				rxip = new RxIPSite('http://rxip-dev/apiajax.php');	// For JRB
+			else
+				rxip = new RxIPSite('http://pago-devel.rxip.net/apiajax.php');
+			// Set up a function to be called after each non-login API call
+			// to check whether the user is still logged in. If not, reload
+			// the page to start the login process.
+			rxip.callCompleted = function(func) {
+				if (!rxip.site.loggedIn)
+					location.reload();
+				else
+					setDebugLinks();
+			};
+			// Initialize the session.
+			if (!rxip.initSession()) {
+				// There is no session, so display the login form.
+				$('#loginform').show();
+				$('#pagecontent').hide();
+			} else {
+				rxip.callAjax('ping');
+			}
+			// Login form action.
+			// Collect the login form data using the RxIPSite.collectFormData function and
+			// pass it to the RxIPSite.loginUser function to attempt login.
+			$('#loginlink').click(function() {
+				$('#loginmsg').html('Try...');
+				var fd = rxip.collectFormData('loginform');
+				fd.application = 'apitest';
+				rxip.loginUser(fd, function(loggedIn) {
+					if (loggedIn) {
+						// We're in; hide the login form and show the page content
+						$('#loginform').hide();
+						$('#pagecontent').show();
+					} else	// Didn't work. Leave the login form displayed
+						$('#loginmsg').html('Failed');
+				});
+				return false;
+			});
+			// List-scripts action
+			// Make a direct AJAX call to the RxIP service. (We may want to do some of this
+			// code in an RxIPSite object function at some point.)
+			//
+			$('#enum').click(function(data) {
+				clearRx();
+				rxip.callAjax('enumerateScripts', { }, function(data) {
+					listScripts(data.scripts, 'Current Scripts');
+				});
+				return false;
+			});
+			// List-patients action
+			// Make a direct AJAX call to the RxIP service. (We may want to do some of this
+			// code in an RxIPSite object function at some point.)
+			//
+			$('#pts').click(function(data) {
+				clearRx();
+				rxip.callAjax('enumerateRxPatients', { }, function(data) {
+					var h = '<p>Patients:</p><p>';
+					for (var i in data.patients) {
+						var pt = data.patients[i];
+						var s = rxip._escapeObject(pt);
+						h += i+': <a href="#" class="ptlink" pid="'+i+'">'+s.patientLastName+', '+s.patientFirstName+' ['+s.patientDob+']</a>';
+						h += '<br />'; 
+					}
+					$('#pagemsg').html(h+'</p>');
+					$('a.ptlink').click(function(data2) {
+						var pid = $(this).attr('pid');
+						rxip.callAjax('enumerateRxPatientScripts', data.patients[pid], function(data) {
+							listScripts(data.scripts, 'Patient Scripts');
+						});
+						return false;
+					});
+				});
+				return false;
+			});
+			// New Rx action
+			$('#newrx').click(function() {
+				clearRx();
+				$('#rxform').show();
+				return false;
+			});
+			// Put Rx action
+			$('#putrx').click(function() {
+				var script = rxip.collectFormData('rxform');
+				rxip.callAjax('putScript', script, function(data) {
+					loadRx(data.script, data.fieldErrors, data.formErrors);
+				});
+				return false;
+			});
+			// Logout link action
+			// Call the RxIPSite.logout function to kill the session, then reload the page to
+			// start all over.
+			$('#logout').click(function() {
+				rxip.logout(function(data) {
+					location.reload();
+				});
+				return false;
+			});
+			// Debugging link action
+			$('a.debugLink').click(function() {
+				var setting = {};
+				var action = $(this).attr('act');
+				setting[action] = !rxip.site.serverDebugSettings[action];
+				if (action == 'sqlLevel' && setting['action'])
+					setting[action] = 2;
+				rxip.setServerDebug(setting, function() {
+					if (rxip.site.serverDebugSettings.debug)
+						$('#ajaxdebug').show();
+					else
+						$('#ajaxdebug').hide();
+					setDebugLinks();
+				});
+				return false;
+			});
+			$("input[name='patientShipSame']").change(function() {
+				if ($(this).is(':checked'))
+					$('#rxform tr.shipaddr').hide();
+				else
+					$('#rxform tr.shipaddr').show();
+			});
+			$("input.insurance-number").change(function() {
+				rxip.callAjax('getAllowedFormulas', {
+						patientInsuranceBin: $("input[name='patientInsuranceBin']").val(),
+						patientInsurancePcn: $("input[name='patientInsurancePcn']").val(),
+					}, function(data) {
+						// Update the list of allowed formulas
+						rxip.rx.allowedFormulas = data.allowedFormulas;
+						var el = $("#rxform select[name='formulaSpeedcode']");
+						var selectedFormula = el.val();
+						el.html(getFormulaOptions());
+						el.val(selectedFormula);
+						// Handle the case where a formula was previously selected but
+						// is not allowed now by returning the select to the default option
+						if (el.find('option:selected').length == 0)
+							el.val('');
+						$("#rxform select[name='formulaSpeedcode']").change();
+					}
+				);
+			});
+			$("#rxform select[name='formulaSpeedcode']").change(function() {
+				var allowed = { min: 0, max: 0, allowedValues: [] };
+				var formulaUnits = '';
+				var selectedFormula = $(this).val();
+				if (selectedFormula && rxip.rx.allowedFormulas[selectedFormula]) {
+					allowed = rxip.rx.allowedFormulas[selectedFormula].quantityValues;
+					formulaUnits = rxip.rx.allowedFormulas[selectedFormula].formulaUnits;
+				}
+				var currentQuantity = $("input[name='rxQuantity'],select[name='rxQuantity']").val();
+				var h; 
+				if (allowed.allowedValues.length > 0) {
+					// Use a select element
+					h = '<select name="rxQuantity"><option value="0">- Select -</option>';
+					for (var i in allowed.allowedValues) {
+						h += '<option value="'+allowed.allowedValues[i].value+'">';
+						h += rxip._escapeString(allowed.allowedValues[i].text)+'</option>';
+					}
+					h += '</select>';
+					$('#quantity-entry').html(h);
+					var el = $("select[name='rxQuantity']"); 
+					el.val(currentQuantity);
+					// Handle the case of an invalid existing value
+					if (el.find('option:selected').length == 0)
+						el.val(0);
+				} else {
+					h = '<input type="text" name="rxQuantity" size=6 /> '+formulaUnits;
+					if (allowed.max > 0)
+						h += ' ('+allowed.max+' max)';
+					$('#quantity-entry').html(h);
+					$("input[name='rxQuantity']").val(currentQuantity);
+				}
+			});
+		});
+	
+		function listScripts(scriptList, title) {
+			var h = '<p>'+title+'</p>';
+			for (var i in scriptList) {
+				var rxrec = rxip._escapeObject(scriptList[i]);
+				var attention = (rxrec.attentionNeeded == 'PR') ? ' <b>ATTENTION NEEDED</b>' : ((rxrec.attentionNeeded == 'PH') ? ' Pharmacy Attention Requested' : '');
+				h += '<div><a href="#" class="rxlink" recid="'+rxrec.rxId+'">'+rxrec.patientFullName+', '+rxrec.formulaSpeedcode+'</a>'+attention+'</div>';
+			}
+			$('#pagemsg').html(h);
+			$('a.rxlink').click(function() {
+				rxip.callAjax('getScript', { rxId: $(this).attr('recid') }, function(data) {
+					loadRx(data.script);
+				});
+				return false;
+			});
+		}
+		
+		function loadRx(rx, errors, formerrors) {
+			rxip.rx = rx;	// For use by other global functions
+			var errmsg = '';
+			$("#rxform select[name='formulaSpeedcode']").html(getFormulaOptions());
+			$("#rxform select[name='formulaSpeedcode']").change();
+			$('#rxform input, #rxform select').each(function() {
+				var name = $(this).attr('name');
+				var row = $(this).parent().parent();
+				if (typeof(errors) != 'undefined' && errors[name]) {
+					row.addClass('badfield');
+					row.attr('title', errors[name]);
+				} else {
+					row.removeClass('badfield');
+					row.removeAttr('title');
+				}
+				var type = $(this).attr('type');
+				if (type == 'checkbox' || type == 'radio')
+					$(this).prop('checked', (rx[name] == $(this).prop('value')) ? true : false);
+				else
+					$(this).val(rx[name]);
+			});
+			$("#rxform select[name='formulaSpeedcode']").change();
+			$("input[name='patientShipSame']").change();
+			if (formerrors) {
+				for (k in errors.formerrors) {
+					if (errmsg != '')
+						errmsg += '<br />';
+					errmsg += errors.formerrors[k];
+				}
+			}
+			var h = '<p><a href="#" id="addnote">Add a Note</a> &nbsp;&nbsp; <a href="#" id="addattachment">Add Attachment</a></p>';
+			if (rx.notes.length > 0)
+				h += '<div><a href="#" id="noteslink">View Notes</a></div>';
+			if (rx.attachments.length > 0) {
+				for (var i in rx.attachments) {
+					var att = rx.attachments[i];
+					h += '<div><a href="#" class="attachment" recid="'+att.attachmentId+'">';
+					h += rxip._escapeString(att.fileName+" ("+att.description+')');
+					h += '</a></div>';
+				}
+			}
+			if (!rx.rxId) {
+				$('#rxattachmentlist,div.sidebar').hide();
+				return;
+			}
+			$('#rxattachmentlist').html(h).show();
+			$('#rxattachment').html('').hide();
+			$('#rxerrors').html(errmsg);
+			$('#rxform').show();
+			$('a.attachment').click(function() {
+				$('div.sidebar').hide();
+				rxip.callAjax('getScriptAttachment', { rxId: rx.rxId, attachmentId: $(this).attr('recid') }, function(data) {
+					$('#rxattachment').html('<object width="100%" height="100%" data="'+data.attachment.uri+'">Can not display attachment</object>').show();
+				});
+				return false;
+			});
+			$('#noteslink').click(function() {
+				$('div.sidebar').hide();
+				var h = '';
+				for (var i in rx.notes) {
+					var n = rxip._escapeObject(rx.notes[i]);
+					var d = new Date();
+					d.setTime(Date.parse(n.createdTime));
+					h += '<div class="rxnote"><p class="notehead">From: '+n.noteFrom+'<br />Sent: '
+						+d.toLocaleDateString()+' '+d.toLocaleTimeString()
+						+'</p><p>'+n.noteText+'</p></div>';
+				}
+				$('#rxattachment').html(h).show();
+				return false;
+			});
+			$('#addnote').click(function() {
+				$('div.sidebar').hide();
+				$('#noteform').show();
+				return false;
+			});
+			$('#addnotebutton').off().click(function() {
+				var text = $('#notetext').val().trim();
+				if (text) {
+					rxip.callAjax('addScriptNote', { rxId: rx.rxId, noteText: text, attentionNeeded: 'PH' }, function(data) {
+						$('#notetext').val('');
+						$('#noteform').hide();
+						loadRx(data.script);
+					});
+				}
+				return false;
+			});
+			$('#addattachment').click(function() {
+				$('div.sidebar').hide();
+				$("#attachmentform input[name='rxId']").val(rx.rxId);
+				$("#attachmentform input[name='description']").val('');
+				$('#attachmentform').show();
+				return false;
+			});
+			$('#uploadattachment').off().click(function() {
+				if ($('#attachment').prop('files').length == 0) {
+					rxip.showError('You must choose an image file!');
+					return false;
+				}
+				var description = $("#attachmentform input[name='description']").val().trim();
+				if (!description) {
+					rxip.showError('Please provide a description for the attachment');
+					return false;
+				}
+				var att = { rxId: rx.rxId, description: description, attachment: $('#attachment').prop('files') };
+				rxip.callAjax('addScriptAttachment', att, function(data) {
+					$('#attachmentform').hide();
+					loadRx(data.script);
+				});
+				return true;
+			});
+		}
+
+		function clearRx() {
+			// Make a dummy Rx object for use until a real one is loaded
+			// from the server.
+			rxip.rx = { allowedFormulas: rxip.site.allowedFormulas }; 
+			$("#rxform select[name='formulaSpeedcode']").html(getFormulaOptions());
+			$('#rxform input, #rxform select').each(function() {
+				var type = $(this).attr('type');
+				if (type != 'checkbox' && type != 'radio')
+					$(this).val('');
+				else
+					$(this).prop('checked', false);
+				var row = $(this).parent().parent();
+				row.removeClass('badfield');
+				row.removeAttr('title');
+			});
+			$("input[name='patientShipSame']").change();
+			$("#rxform select[name='formulaSpeedcode']").change();
+			$('#rxerrors').html('');
+			$('#rxform').hide();
+		}
+
+		function getFormulaOptions() {
+			var formulaOptions = '<option value="">- Select -</option>';
+			for (var code in rxip.rx.allowedFormulas)
+				formulaOptions += '<option value="'+code+'">'+code+'</option>';
+			return formulaOptions;
+		}
+
+		function setDebugLinks() {
+			for (k in rxip.site.serverDebugSettings)
+				$("a.debugLink[act='"+k+"'] span.onoff").html(rxip.site.serverDebugSettings[k] ? 'Off' : 'On');
+		}
+	</script>
+</head>
+<body>
+	<form id='loginform' style="display:none">
+		Username: <input type="text" name="username" size=30 /><br />
+		Password: <input type="password" name="password" size=20 /><br />
+		<a id="loginlink" href="#">Login</a><br />
+		<p id="loginmsg" style="color:red"> </p>
+	</form>
+	<div id='pagecontent'>
+		<h3>This is the page!</h3>
+		<p><a id="enum" href="#">List Scripts</a>
+			&nbsp;&nbsp; <a id="pts" href="#">List Patients</a>
+			&nbsp;&nbsp; <a id="newrx" href="#">New Rx</a>
+		</p>
+		<p>
+			<a id="logout" href="#">Log out</a>
+			&nbsp;&nbsp; Debugging: <a class="debugLink" act="debug" href="#"><span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="trace" href="#">Trace <span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="strict" href="#">Strict <span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="sqlLevel" href="#">SQL <span class="onoff">On</span></a>
+		</p>
+		<p id="pagemsg"> </p>
+		<div id="rxform" style="display:none">
+			<div style="float:right;width:600px">
+				<div id="rxattachmentlist"> </div>
+				<div id="rxattachment" class="sidebar" style="display:none;height:400px;width:600px"> </div>
+				<div id="noteform" class="sidebar" style="display:none">
+					<textarea id="notetext" rows=10 cols=50></textarea><br />
+					<button id="addnotebutton">Add Note</button>
+				</div>
+				<div id="attachmentform" class="sidebar" style="display:none">
+					<p>Description: <input type="text" name="description" size=25 /></p>
+					<p>Choose Image File: <input id="attachment" type="file" accept="image/*,application/pdf" id="capture" capture="camera"></p>
+					<p><button id="uploadattachment">Upload image</button></p>
+				</div>
+			</div>
+			<table>
+			<tr><td>Rx Id</td><td><input type="text" name="rxId" size=8 disabled="disabled" /></td></tr>
+			<tr><td>Provider</td><td><input type="text" name="doctorFullName" size=35 disabled="disabled" /></td></tr>
+			<tr><td>Patient Last</td><td><input type="text" name="patientLastName" size=20 /></td></tr>
+			<tr><td>Patient First</td><td><input type="text" name="patientFirstName" size=20 /></td></tr>
+			<tr><td>Patient DOB</td><td><input type="text" name="patientDob" size=10 /></td></tr>
+			<tr>
+					<td>Patient Gender</td><td><input type="radio" name="patientGender" value="M" /> Male
+						&nbsp;&nbsp; <input type="radio" name="patientGender" value="F" /> Female
+			</td></tr>
+			<tr><td>Patient Address</td><td><input type="text" name="patientAddress1" size=20 /></td></tr>
+			<tr><td></td><td><input type="text" name="patientAddress2" size=20 /></td></tr>
+			<tr><td>Patient City</td><td><input type="text" name="patientCity" size=20 /></td></tr>
+			<tr><td>Patient State</td><td><input type="text" name="patientState" size=2 /></td></tr>
+			<tr><td>Patient ZIP</td><td><input type="text" name="patientZip" size=10 /></td></tr>
+			<tr><td>Patient Phone 1</td><td><input type="text" name="patientPhone1" size=13 /></td></tr>
+			<tr><td>Patient Phone 2</td><td><input type="text" name="patientPhone2" size=13 /></td></tr>
+			<tr><td></td><td><input type="checkbox" name="patientShipSame" value="1" /> Shipping Address same as billing</td></tr>
+			<tr class="shipaddr"><td>Patient Shipping Address</td><td><input type="text" name="patientShipAddress1" size=20 /></td></tr>
+			<tr class="shipaddr"><td></td><td><input type="text" name="patientShipAddress2" size=20 /></td></tr>
+			<tr class="shipaddr"><td>Patient Shipping City</td><td><input type="text" name="patientShipCity" size=20 /></td></tr>
+			<tr class="shipaddr"><td>Patient Shipping State</td><td><input type="text" name="patientShipState" size=2 /></td></tr>
+			<tr class="shipaddr"><td>Patient Shipping ZIP</td><td><input type="text" name="patientShipZip" size=10 /></td></tr>
+			<tr><td>Patient Insurance BIN</td><td><input class="insurance-number" type="text" name="patientInsuranceBin" size=7 /></td></tr>
+			<tr><td>Patient Insurance PCN</td><td><input class="insurance-number" type="text" name="patientInsurancePcn" size=10 /></td></tr>
+			<tr><td>Date Written</td><td><input type="text" name="dateWritten" size=10 /></td></tr>
+			<tr><td>Formula ID</td><td><select name="formulaSpeedcode" /></td></tr>
+			<tr><td>Quantity</td><td id="quantity-entry"><input type="text" name="rxQuantity" size=6 /></td></tr>
+			<tr><td>Refills</td><td><input type="text" name="rxRefills" size=6 /></td></tr>
+			</table>
+			<p><button id="putrx">Submit Rx to RxIP</button></p>
+			<div id="rxerrors" style="color:red"></div>
+		</div>
+	</div>
+	<div id="debugsettings"> </div>
+	<div id="ajaxdebug" style="display:none"> </div>
+</body>

@@ -1,0 +1,57 @@
+<head>
+	<title>API Test</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$('#test-click').click(function() {
+				call_ajax('listScripts', {userId: 3}, function(data) {
+					var el = $('#result');
+					var h = '<table border=1><caption>User ID '+data.userId+'</caption>';
+					h += '<tr><th>ID</th><th>Last</th><th>First</th><th>Formula</th></tr>';
+					for (idx in data.scripts) {
+						h += '<tr><td>'+data.scripts[idx].id+'</td>';
+						h += '<td>'+data.scripts[idx].lastname+'</td>';
+						h += '<td>'+data.scripts[idx].firstname+'</td>';
+						h += '<td>'+data.scripts[idx].formula+'</td>';
+						h += '</tr>';
+						el.html(h);
+					}
+					el.append("</table>");
+				});
+				return false;
+			});
+			$('#test-clickerr').click(function() {
+				call_ajax('listScripts', {}, function(data) {
+				});
+				return false;
+			});
+		});
+		function call_ajax(func, data, callback) {
+			data.ajax = func;
+			jQuery.ajax( {
+				dataType: 'json',
+				url: 'ajax.php',
+				type: 'POST',
+				data: data,
+				success: function(result) {
+					if (typeof(result.err) != 'undefined') {
+						alert(result.err);
+						return;
+					}
+					if (typeof(callback) == 'function')
+						callback(result.data);
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (errorThrown)
+						alert('Unable to communicate with server:\n\n'+errorThrown);
+				}
+			});
+		}
+	</script>	
+</head>
+<body>
+	<p>This is an API Test!</p>
+	<p><a id="test-click" href="#">Click Here</a></p>
+	<p><a id="test-clickerr" href="#">Click Here For Error</a></p>
+	<div id='result'></div>
+</body>

@@ -1,0 +1,134 @@
+<!doctype html>
+<head><title>Test</title>
+	<script type="text/javascript" src="js/vendor/jquery/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="js/rxipsite.js"></script>
+	<script type="text/javascript">
+		/* On document load, see if there is a session (login) established.
+		 * 
+		 * If not, display the login form. (In this example page, it's just a hidden div
+		 * that we'll show when needed.)
+		 */
+		$(function() {
+			// Create the RxIP API object
+			if (location.hostname == 'rxip-dev')
+				rxip = new RxIPSite('http://rxip-dev/apiajax.php');	// For JRB
+			else
+				rxip = new RxIPSite('http://pago-devel.rxip.net/apiajax.php');
+			// Set up a function to be called after each non-login API call
+			// to check whether the user is still logged in. If not, reload
+			// the page to start the login process.
+			rxip.callCompleted = function(func) {
+				setDebugLinks();
+			};
+			// Initialize the session.
+			if (!rxip.initSession()) {
+				// There is no session, so display the login form.
+				$('#loginform').show();
+				$('#pagecontent').hide();
+			} else {
+				rxip.callAjax('getUserProfile', {}, loadProfile);
+			}
+			// Login form action.
+			// Collect the login form data using the RxIPSite.collectFormData function and
+			// pass it to the RxIPSite.loginUser function to attempt login.
+			$('#loginlink').click(function() {
+				$('#loginmsg').html('Try...');
+				var fd = rxip.collectFormData('loginform');
+				fd.application = 'apitest';
+				rxip.loginUser(fd, function(loggedIn) {
+					if (loggedIn) {
+						// We're in; hide the login form and show the page content
+						$('#loginform').hide();
+						$('#pagecontent').show();
+						rxip.callAjax('getUserProfile', {}, loadProfile);
+					} else	// Didn't work. Leave the login form displayed
+						$('#loginmsg').html('Failed');
+				});
+				return false;
+			});
+			// Logout link action
+			// Call the RxIPSite.logout function to kill the session, then reload the page to
+			// start all over.
+			$('#logout').click(function() {
+				rxip.logout(function(data) {
+					location.reload();
+				});
+				return false;
+			});
+			// Debugging link action
+			$('a.debugLink').click(function() {
+				var setting = {};
+				var action = $(this).attr('act');
+				setting[action] = !rxip.site.serverDebugSettings[action];
+				if (action == 'sqlLevel' && setting['action'])
+					setting[action] = 2;
+				rxip.setServerDebug(setting, function() {
+					if (rxip.site.serverDebugSettings.debug)
+						$('#ajaxdebug').show();
+					else
+						$('#ajaxdebug').hide();
+					setDebugLinks();
+				});
+				return false;
+			});
+			$('#checkPass').click(function() {
+				rxip.callAjax('verifyPassword', { password: $('#passCheck').val() }, function(data) {
+					$('#checkPassResult').text('Password verification '+(data.passwordMatches ? 'OK' : 'FAILED'));
+				});
+			});
+			$('#updateUser').click(function() {
+				$('#uphead').html("User Profile");
+				var formData = rxip.collectFormData('profile');
+				console.log(formData);
+				rxip.callAjax('setUserProfile', formData, function(data) {
+					loadProfile(data);
+					$('#uphead').html($('#uphead').html()+" (Updated)");
+				});
+			});
+		}); // end onLoad
+
+		function loadProfile(data) {
+			var h = '<table><tr><td>password</td><td><input type="text" name="password" size=20 /></td></tr>';
+			var profile = rxip._escapeObject(data.user)
+			for (var k in profile) {
+				h += '<tr><td>'+k+'</td><td><input type="text" name="'+k+'" value="'+profile[k]+'" size=40 /></td></tr>';
+			}
+			$('#profile').html(h+'</table>');
+		}
+		
+		function setDebugLinks() {
+			for (k in rxip.site.serverDebugSettings)
+				$("a.debugLink[act='"+k+"'] span.onoff").html(rxip.site.serverDebugSettings[k] ? 'Off' : 'On');
+		}
+	</script>
+</head>
+<body>
+	<form id='loginform' style="display:none">
+		Username: <input type="text" name="username" size=30 /><br />
+		Password: <input type="password" name="password" size=20 /><br />
+		<a id="loginlink" href="#">Login</a><br />
+		<p id="loginmsg" style="color:red"> </p>
+	</form>
+	<div id='pagecontent'>
+		<h3>Test User Profile stuff</h3>
+		<p>
+			<input type="text" id="passCheck" size=20 />
+			<button id="checkPass">Verify Password</button>
+			<div id="checkPassResult"></div>
+		</p>
+		<h4 id="uphead">User Profile</h4>
+		<p id="profile">
+		</p>
+		<p><button id="updateUser">Update User Profile</button></p>
+		<p>
+			<a id="logout" href="#">Log out</a>
+			&nbsp;&nbsp; Debugging: <a class="debugLink" act="debug" href="#"><span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="trace" href="#">Trace <span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="strict" href="#">Strict <span class="onoff">On</span></a>
+			&middot; <a class="debugLink" act="sqlLevel" href="#">SQL <span class="onoff">On</span></a>
+		</p>
+		<p id="pagemsg"> </p>
+	</div>
+	<div id="debugsettings"> </div>
+	<div id="ajaxdebug" style="display:none"> </div>
+</body>
